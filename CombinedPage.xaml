@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:controls="clr-namespace:Microsoft.Maui.Controls;assembly=Microsoft.Maui.Controls"
+             xmlns:treeviewengine="clr-namespace:Syncfusion.TreeView.Engine;assembly=Syncfusion.Maui.TreeView"
+             xmlns:syncfusion="clr-namespace:Syncfusion.Maui.TreeView;assembly=Syncfusion.Maui.TreeView"
+             xmlns:local="clr-namespace:OlymPOS"
+             xmlns:converters="clr-namespace:OlymPOS"
+             x:Class="OlymPOS.CombinedPage"
+             Title="Combined Page"
+             BackgroundColor="#1f1f1f">
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Categories"
+                     Clicked="OnIncreaseClicked"/>
+    </ContentPage.ToolbarItems>
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:QuantityToImageConverter x:Key="QuantityToImageConverter"/>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <ContentPage.BindingContext>
+        <local:CombinedViewModel />
+    </ContentPage.BindingContext>
+
+    <Grid ColumnSpacing="0">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="180" x:Name="CategoriesColumn"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- Categories Sidebar (TreeView) -->
+        <Frame Grid.Column="0" BackgroundColor="SteelBlue" Padding="0">
+            <syncfusion:SfTreeView x:Name="treeView"
+                                   ItemsSource="{Binding ProductCategories}"
+                                   AutoExpandMode="None"
+                                   FullRowSelect="True"
+                                   BackgroundColor="Black"
+                                   ItemHeight="40"
+                                   ExpandActionTarget="Node"
+                                   SelectionBackground="SteelBlue"
+                                   ExpanderPosition="End"
+                                   ItemTapped="TreeView_ItemTapped">
+                <syncfusion:SfTreeView.HierarchyPropertyDescriptors>
+                    <treeviewengine:HierarchyPropertyDescriptor TargetType="{x:Type local:ProductGroup}" ChildPropertyName="Subcategories"/>
+                </syncfusion:SfTreeView.HierarchyPropertyDescriptors>
+                <syncfusion:SfTreeView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid BackgroundColor="Black" Padding="10,0" >
+                            <Label Text="{Binding Description}" TextColor="White" FontSize="16" FontAttributes="Bold" VerticalTextAlignment="Start"/>
+                        
+                        </Grid>
+                    </DataTemplate>
+                </syncfusion:SfTreeView.ItemTemplate>
+            </syncfusion:SfTreeView>
+        </Frame>
+
+        <!-- Main Content Area -->
+        <ScrollView Grid.Column="1">
+            <VerticalStackLayout Spacing="10" Padding="10">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="50" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <Entry x:Name="searchEntry" Placeholder="Search items..." TextColor="White" Grid.Column="0" Completed="OnSearchClicked" />
+                    <ImageButton Source="search.png" Clicked="OnSearchClicked" WidthRequest="30" HeightRequest="30" Grid.Column="2"/>
+                    <ImageButton Source="microphone.png" Clicked="OnExtraClicked" WidthRequest="30" HeightRequest="30" Grid.Column="1"/>
+                </Grid>
+
+                <CollectionView ItemsSource="{Binding DisplayedProducts}">
+
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Padding="5" ColumnSpacing="5">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+
+                                <Image Grid.Column="0" 
+                       Source="{Binding Quantity, Converter={StaticResource QuantityToImageConverter}}" 
+                       WidthRequest="30" HeightRequest="30">
+                                    <Image.GestureRecognizers>
+                                        <TapGestureRecognizer Tapped="OnImageTapped"/>
+                                    </Image.GestureRecognizers>
+                                </Image>
+                                <Label Text="{Binding Description}" Grid.Column="1" FontSize="14" 
+                       FontAttributes="Bold" FontFamily="Tahoma" TextColor="White"
+                       VerticalOptions="Center" HorizontalOptions="Start"/>
+
+                            </Grid>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </VerticalStackLayout>
+        </ScrollView>
+    </Grid>
+</ContentPage>
+

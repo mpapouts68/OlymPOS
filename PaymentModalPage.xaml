@@ -1,0 +1,66 @@
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="OlymPOS.PaymentModalPage"
+             Title="Payment Options">
+
+    <VerticalStackLayout Spacing="140" Padding="40">
+
+        <!-- Payment Option ImageButtons -->
+        <StackLayout Orientation="Horizontal" HorizontalOptions="Center" Spacing="20">
+            <VerticalStackLayout>
+                <ImageButton Source="cash64.png" Command="{Binding CashCommand}" WidthRequest="80" HeightRequest="60"/>
+                <Label Text="Cash" HorizontalTextAlignment="Center" FontSize="20" FontAttributes="Bold"/>
+            </VerticalStackLayout>
+            <VerticalStackLayout>
+                <ImageButton Source="card.png" Command="{Binding CardCommand}" WidthRequest="100" HeightRequest="60"/>
+                <Label Text="Card" HorizontalTextAlignment="Center" FontSize="20" FontAttributes="Bold"/>
+            </VerticalStackLayout>
+            <VerticalStackLayout>
+                <ImageButton Source="voucher64.png" Command="{Binding VoucherCommand}" WidthRequest="100" HeightRequest="60"/>
+                <Label Text="Voucher" HorizontalTextAlignment="Center" FontSize="20" FontAttributes="Bold"/>
+            </VerticalStackLayout>
+        </StackLayout>
+
+        <!-- Additional Options arranged in 2 columns and 3 rows -->
+        <Grid HorizontalOptions="Center" VerticalOptions="Center" RowSpacing="10" ColumnSpacing="50">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <!-- Column 0 -->
+            <VerticalStackLayout Grid.Row="0" Grid.Column="0">
+                <ImageButton Source="tprinter.png" WidthRequest="100" HeightRequest="100" Command="{Binding PrintOption1Command}"/>
+                <Label Text="Print Only" HorizontalTextAlignment="Center" FontSize="20" FontAttributes="Bold"/>
+            </VerticalStackLayout>
+            <VerticalStackLayout Grid.Row="1" Grid.Column="0">
+                <ImageButton Source="trinterc.png" WidthRequest="100" HeightRequest="100" Command="{Binding PrintOption2Command}"/>
+                <Label Text="Close Only" HorizontalTextAlignment="Center" FontSize="20" FontAttributes="Bold"/>
+            </VerticalStackLayout>
+            <VerticalStackLayout Grid.Row="2" Grid.Column="0">
+                <ImageButton Source="cashreg.png" WidthRequest="100" HeightRequest="100" Command="{Binding PrintOption3Command}"/>
+                <Label Text="Re-Send" HorizontalTextAlignment="Center" FontSize="20" FontAttributes="Bold"/>
+            </VerticalStackLayout>
+
+            <!-- Column 1 -->
+            <VerticalStackLayout Grid.Row="0" Grid.Column="1">
+                <ImageButton Source="tprinter.png" WidthRequest="100" HeightRequest="100" Command="{Binding PrintOption4Command}"/>
+                <Label Text="Print And Close" HorizontalTextAlignment="Center" FontSize="20" FontAttributes="Bold"/>
+            </VerticalStackLayout>
+            <VerticalStackLayout Grid.Row="1" Grid.Column="1">
+                <ImageButton Source="admin.png" WidthRequest="100" HeightRequest="100" Command="{Binding PrintOption5Command}"/>
+                <Label Text="Admin" HorizontalTextAlignment="Center" FontSize="20" FontAttributes="Bold"/>
+            </VerticalStackLayout>
+            <VerticalStackLayout Grid.Row="2" Grid.Column="1">
+                <ImageButton Source="exit.png" WidthRequest="100" HeightRequest="100" Command="{Binding PrintOption6Command}"/>
+                <Label Text="Exit" HorizontalTextAlignment="Center" FontSize="20" FontAttributes="Bold"/>
+            </VerticalStackLayout>
+        </Grid>
+    </VerticalStackLayout>
+
+</ContentPage>

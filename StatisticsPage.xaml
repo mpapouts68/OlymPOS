@@ -1,0 +1,46 @@
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="OlymPOS.StatisticsPage"
+             xmlns:local="clr-namespace:OlymPOS" 
+             Title="Clerk Statistics"
+             BackgroundColor="#1f1f1f">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="10" Spacing="10">
+            <!-- Actual Orders Section -->
+            <Label Text="Actual Orders" TextColor="SteelBlue"  FontSize="Subtitle"/>
+            <CollectionView x:Name="actualOrdersList">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <StackLayout Padding="10">
+                            <Label Text="{Binding DescriptionAndPostNumber}" TextColor="White" FontAttributes="Bold"/>
+                            <Label Text="{Binding TimeDate, StringFormat='{0:g}'}" TextColor="LightGray"/>
+                            <Label Text="{Binding OrderTotalAfterDiscount, StringFormat='Total: {0:C}'}" TextColor="LightGray"/>
+
+                        </StackLayout>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+            <Label x:Name="actualOrdersSubtotal" TextColor="SteelBlue" FontAttributes="Bold" FontSize="Subtitle"/>
+
+            <!-- Historical Orders Section -->
+            <Label Text="Historical Orders" TextColor="SteelBlue" FontSize="Subtitle"/>
+            <CollectionView x:Name="historyOrdersList">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <StackLayout Padding="10">
+                            <Label Text="{Binding DescriptionAndPostNumber}" TextColor="White" FontAttributes="Bold"/>
+                            <Label Text="{Binding TimeDate, StringFormat='{0:g}'}" TextColor="LightGray"/>
+                            <Label Text="{Binding OrderTotalAfterDiscount, StringFormat='Total: {0:C}'}" TextColor="LightGray"/>
+
+                        </StackLayout>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+            <Label x:Name="historyOrdersSubtotal" TextColor="SteelBlue" FontAttributes="Bold" FontSize="Subtitle"/>
+
+            <!-- Grand Total -->
+            <Label x:Name="grandTotal" TextColor="LightSteelBlue" FontAttributes="Bold" FontSize="Title"/>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

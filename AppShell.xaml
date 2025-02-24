@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Shell
+    x:Class="OlymPOS.AppShell"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:local="clr-namespace:OlymPOS"
+    BackgroundColor="Black"
+    Shell.FlyoutBehavior="Disabled"
+    Shell.BackgroundColor="SteelBlue">
+    <!-- Define ShellItem for each page or tab -->
+    <ShellItem Title="Main Page" FlyoutIcon="main_page_icon.png">
+        <ShellContent ContentTemplate="{DataTemplate local:MainPage}" />
+    </ShellItem>
+
+    <!-- Define ShellItem for the TablePage -->
+    <ShellItem Title="Table Page" FlyoutIcon="table_page_icon.png">
+        <ShellContent ContentTemplate="{DataTemplate local:TablePage}" />
+
+    </ShellItem>
+
+</Shell>

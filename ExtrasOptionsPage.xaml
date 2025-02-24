@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:buttons="clr-namespace:Syncfusion.Maui.Buttons;assembly=Syncfusion.Maui.Buttons"
+             xmlns:sliders="clr-namespace:Syncfusion.Maui.Sliders;assembly=Syncfusion.Maui.Sliders"
+             xmlns:core="clr-namespace:Syncfusion.Maui.Core;assembly=Syncfusion.Maui.Core"
+             xmlns:local="clr-namespace:OlymPOS"
+             x:Class="OlymPOS.ExtrasOptionsPage"
+             Title="Extras Options Page"
+             BackgroundColor="#1f1f1f">
+    <ContentPage.BindingContext>
+        <local:ExtraViewModel />
+    </ContentPage.BindingContext>
+
+    <StackLayout Orientation="Vertical">
+        <!-- Container for Segmented Control -->
+        <StackLayout x:Name="radioButtonsContainer" Orientation="Horizontal">
+            <!-- Segmented Control will be added programmatically here -->
+        </StackLayout>
+
+        <!-- Separator -->
+        <BoxView HeightRequest="2" BackgroundColor="Gray" />
+
+        <!-- Checkboxes, Steppers, and Syncfusion Switches -->
+        <ScrollView>
+            <FlexLayout BindableLayout.ItemsSource="{Binding Extras}"
+                        Direction="Column"
+                        Wrap="Wrap"
+                        JustifyContent="Start"
+                        AlignItems="Start"
+                        AlignContent="Start">
+                <BindableLayout.ItemTemplate>
+                    <DataTemplate>
+                        <Grid VerticalOptions="StartAndExpand"
+                              ColumnDefinitions="*, *, *"
+                              RowDefinitions="Auto"
+                              ColumnSpacing="10">
+                            <!-- Checkbox -->
+                            <buttons:SfCheckBox Grid.Column="0"
+                                                Text="{Binding Description}" 
+                                                TextColor="SteelBlue" 
+                                                VerticalOptions="Center"/>
+                            <!-- Stepper and Quantity Label -->
+                            <StackLayout Grid.Column="1" Grid.Row="2" 
+                                         Orientation="Horizontal" 
+                                         HorizontalOptions="Start" 
+                                         VerticalOptions="Center">
+                                <sliders:SfSlider Grid.Column="1" Grid.Row="2">
+                                    <sliders:SfSlider.Tooltip>
+                                        <sliders:SliderTooltip />
+                                    </sliders:SfSlider.Tooltip>
+                                </sliders:SfSlider>
+                                <Label Text="{Binding Quantity}" 
+                                       FontSize="16" 
+                                       FontAttributes="Bold" 
+                                       HorizontalOptions="Start" 
+                                       VerticalOptions="Center" 
+                                       TextColor="White"/>
+                            </StackLayout>
+
+                        </Grid>
+                    </DataTemplate>
+                </BindableLayout.ItemTemplate>
+            </FlexLayout>
+        </ScrollView>
+
+        <!-- Prefix Buttons -->
+        <FlexLayout Direction="Column" Wrap="Wrap" JustifyContent="Center">
+            <buttons:SfButton Text="With" Margin="5" BackgroundColor="LightGray" TextColor="Black"/>
+            <buttons:SfButton Text="Without" Margin="5" BackgroundColor="LightGray" TextColor="Black"/>
+            <buttons:SfButton Text="A Little" Margin="5" BackgroundColor="LightGray" TextColor="Black"/>
+            <buttons:SfButton Text="A Lot" Margin="5" BackgroundColor="LightGray" TextColor="Black"/>
+            <buttons:SfButton Text="Only" Margin="5" BackgroundColor="LightGray" TextColor="Black"/>
+        </FlexLayout>
+    </StackLayout>
+</ContentPage>

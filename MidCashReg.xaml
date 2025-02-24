@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:OlymPOS"
+             x:Class="OlymPOS.MidCashReg"
+             Title="MidPage"
+             BackgroundColor="#00000000">
+    <VerticalStackLayout
+        HorizontalOptions="Center"
+        VerticalOptions="Center" 
+        Spacing="50"
+        Padding="50,50,50,100"
+        BackgroundColor="LightSteelBlue"
+        WidthRequest="300"
+        HeightRequest="200">
+
+        <!-- Centered HorizontalStackLayout -->
+        <HorizontalStackLayout HorizontalOptions="Center" VerticalOptions="Center">
+            <!-- Grid for first ImageButton and Label, centered -->
+            <Grid WidthRequest="80" HorizontalOptions="Center">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="70"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <ImageButton Source="tprinter.png" Clicked="SendWPrint" WidthRequest="70" HeightRequest="70" Grid.Row="0"/>
+                <Label Text="Print" HorizontalOptions="Center" VerticalOptions="Center" HorizontalTextAlignment="Center" FontAttributes="Bold" Grid.Row="1"/>
+            </Grid>
+
+            <!-- Spacer between the buttons for visual separation -->
+            <BoxView WidthRequest="20" BackgroundColor="SteelBlue"/>
+
+            <!-- Grid for second ImageButton and Label, centered -->
+            <Grid WidthRequest="80" HorizontalOptions="Center">
+                <!-- Made width consistent with the first Grid -->
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="70"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <ImageButton Source="trinterc.png" Clicked="SendWiPrint" WidthRequest="70" HeightRequest="70" Grid.Row="0"/>
+                <Label Text="NoPrint" HorizontalOptions="Center" VerticalOptions="Center" HorizontalTextAlignment="Center" FontAttributes="Bold" Grid.Row="1"/>
+            </Grid>
+        </HorizontalStackLayout>
+
+    </VerticalStackLayout>
+</ContentPage>

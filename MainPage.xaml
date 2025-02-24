@@ -1,0 +1,112 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="OlymPOS.MainPage">
+    <Grid Padding="30" RowSpacing="2" ColumnSpacing="4"
+          RowDefinitions="2*,*,*,*,*,*"
+          ColumnDefinitions="*,*,*"
+        BackgroundColor="{StaticResource White}">
+
+        <Image Source="logsmall.png" Grid.Row="0" HorizontalOptions="Center" VerticalOptions="CenterAndExpand"
+               Grid.ColumnSpan="10" />
+
+
+        <Label x:Name="CurrentCalculation"
+               FontSize="18"
+               LineBreakMode="NoWrap"
+               Grid.ColumnSpan="30"
+               Text="Please Enter PIN"
+               TextColor="{StaticResource Black}"
+               HorizontalTextAlignment="Center"
+               VerticalTextAlignment="Start"
+               Grid.Row="1"/>
+
+        <Entry x:Name="resultText"
+               FontFamily="Courier New"
+               FontSize="40" FontAttributes="Bold" 
+               HorizontalTextAlignment="Center"
+               VerticalTextAlignment="End"
+               TextColor="{Color}"
+               Text="****"
+               IsPassword="True"
+               Grid.ColumnSpan="10" 
+               Grid.Row="1"/>
+
+        <ActivityIndicator x:Name="activityIndicator"
+              IsRunning="False"
+              IsVisible="False"
+              Color="SteelBlue"
+              VerticalOptions="Center"
+              HorizontalOptions="Center"
+              HeightRequest="50"
+              WidthRequest="50"                           
+              Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3"
+            />
+
+        <Button Text="7" Grid.Row="2" Grid.Column="0" 
+                BackgroundColor="SteelBlue"
+                TextColor="Black" FontSize="40"
+               FontAttributes="Bold"
+               Clicked="OnSelectNumber" />
+        <Button Text="8" Grid.Row="2" Grid.Column="1"
+               BackgroundColor="SteelBlue"
+               TextColor="Black" FontSize="40"
+               FontAttributes="Bold"
+                       
+               Clicked="OnSelectNumber" />
+        <Button Text="9" Grid.Row="2" Grid.Column="2"
+               BackgroundColor="SteelBlue"
+               TextColor="Black" FontSize="40"
+                FontAttributes="Bold"
+               Clicked="OnSelectNumber" />
+
+        <Button Text="4" Grid.Row="3" Grid.Column="0"
+                   BackgroundColor="SteelBlue"
+   TextColor="Black" FontSize="40"
+                FontAttributes="Bold"
+              Clicked="OnSelectNumber" />
+        <Button Text="5" Grid.Row="3" Grid.Column="1"
+                   BackgroundColor="SteelBlue"
+   TextColor="Black" FontSize="40"
+                FontAttributes="Bold"
+              Clicked="OnSelectNumber" />
+        <Button Text="6" Grid.Row="3" Grid.Column="2"
+                   BackgroundColor="SteelBlue"
+   TextColor="Black" FontSize="40"
+                FontAttributes="Bold"
+              Clicked="OnSelectNumber" />
+
+        <Button Text="1" Grid.Row="4" Grid.Column="0"
+                   BackgroundColor="SteelBlue"
+   TextColor="Black" FontSize="40"
+                FontAttributes="Bold"
+              Clicked="OnSelectNumber" />
+        <Button Text="2" Grid.Row="4" Grid.Column="1"
+                   BackgroundColor="SteelBlue"
+   TextColor="Black" FontSize="40"
+                FontAttributes="Bold"
+              Clicked="OnSelectNumber" />
+        <Button Text="3" Grid.Row="4" Grid.Column="2"
+                   BackgroundColor="SteelBlue"
+   TextColor="Black" FontSize="40"
+                FontAttributes="Bold"
+              Clicked="OnSelectNumber" />
+        <Button Text="0" Grid.Row="5" Grid.Column="1" 
+                   BackgroundColor="SteelBlue"
+   TextColor="Black" FontSize="40"
+                FontAttributes="Bold"
+              Clicked="OnSelectNumber" />
+        <Button Text="OK" Grid.Row="5" Grid.Column="0" 
+                   BackgroundColor="SteelBlue"
+   TextColor="Black" FontSize="40"
+                FontAttributes="Bold"
+               Clicked="LogonAsync" />
+        <Button Text="C" Grid.Row="5" Grid.Column="2" 
+                   BackgroundColor="SteelBlue"
+   TextColor="Red" FontSize="40"
+                FontAttributes="Bold"
+               Clicked="OnClear" />
+
+
+    </Grid>
+</ContentPage>

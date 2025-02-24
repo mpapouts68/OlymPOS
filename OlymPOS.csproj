@@ -1,0 +1,215 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFrameworks>net9.0-android;net9.0-ios;net9.0-maccatalyst</TargetFrameworks>
+		<!-- Uncomment to also build the tizen app. You will need to install tizen by following this: https://github.com/Samsung/Tizen.NET -->
+		<!-- <TargetFrameworks>$(TargetFrameworks);net9.0-tizen</TargetFrameworks> -->
+		<OutputType>Exe</OutputType>
+		<RootNamespace>OlymPOSAndroid</RootNamespace>
+		<UseMaui>true</UseMaui>
+		<SingleProject>true</SingleProject>
+		<ImplicitUsings>enable</ImplicitUsings>
+
+		<!-- Display name -->
+		<ApplicationTitle>OlymPOSAndroid</ApplicationTitle>
+
+		<!-- App Identifier -->
+		<ApplicationId>com.companyname.olymposandroid</ApplicationId>
+		<ApplicationIdGuid>06388da6-d96d-4448-90a6-ff6ad65dc300</ApplicationIdGuid>
+
+		<!-- Versions -->
+		<ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
+		<ApplicationVersion>1</ApplicationVersion>
+
+		
+		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">21.0</SupportedOSPlatformVersion>
+		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</SupportedOSPlatformVersion>
+		<TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</TargetPlatformMinVersion>
+		
+		<Title>OlymPOS</Title>
+		<PackageIcon></PackageIcon>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net9.0-android|AnyCPU'">
+	  <Optimize>True</Optimize>
+	  <RunAOTCompilation>True</RunAOTCompilation>
+	  <PublishTrimmed>True</PublishTrimmed>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<!-- App Icon -->
+		<MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#512BD4" />
+
+		<!-- Splash Screen -->
+		<AndroidAsset Include="Resources\Splash\splash.svg" Color="#512BD4" BaseSize="128,128" />
+
+		<!-- Images -->
+		<MauiImage Include="Resources\Images\*" />
+		<MauiImage Update="Resources\Images\dotnet_bot.svg" BaseSize="168,208" />
+
+		<!-- Custom Fonts -->
+		<MauiFont Include="Resources\Fonts\*" />
+		
+
+		<!-- Raw Assets (also remove the "Resources\Raw" prefix) -->
+		<MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <MauiImage Remove="Resources\Images\logqua.svg" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Remove="addorder.png" />
+	  <None Remove="Resources\Fonts\fa_solid.ttf" />
+	  <None Remove="Resources\Images\add24.png" />
+	  <None Remove="Resources\Images\admin.png" />
+	  <None Remove="Resources\Images\card.png" />
+	  <None Remove="Resources\Images\cash64.png" />
+	  <None Remove="Resources\Images\cashreg.png" />
+	  <None Remove="Resources\Images\disc29.png" />
+	  <None Remove="Resources\Images\discount.png" />
+	  <None Remove="Resources\Images\edit_remove.png" />
+	  <None Remove="Resources\Images\exchange.png" />
+	  <None Remove="Resources\Images\exit.png" />
+	  <None Remove="Resources\Images\exit29.png" />
+	  <None Remove="Resources\Images\floorplan29.png" />
+	  <None Remove="Resources\Images\flower.png" />
+	  <None Remove="Resources\Images\globe29.png" />
+	  <None Remove="Resources\Images\GREEN.png" />
+	  <None Remove="Resources\Images\group.png" />
+	  <None Remove="Resources\Images\last29.png" />
+	  <None Remove="Resources\Images\logqua.svg" />
+	  <None Remove="Resources\Images\logsmall.svg" />
+	  <None Remove="Resources\Images\magni.png" />
+	  <None Remove="Resources\Images\meeting.png" />
+	  <None Remove="Resources\Images\message29.png" />
+	  <None Remove="Resources\Images\microphone.png" />
+	  <None Remove="Resources\Images\MOVE.png" />
+	  <None Remove="Resources\Images\nameorder29.png" />
+	  <None Remove="Resources\Images\o0.png" />
+	  <None Remove="Resources\Images\o1.png" />
+	  <None Remove="Resources\Images\o2.png" />
+	  <None Remove="Resources\Images\o3.png" />
+	  <None Remove="Resources\Images\o4.png" />
+	  <None Remove="Resources\Images\o5.png" />
+	  <None Remove="Resources\Images\o6.png" />
+	  <None Remove="Resources\Images\o7.png" />
+	  <None Remove="Resources\Images\o8.png" />
+	  <None Remove="Resources\Images\o9.png" />
+	  <None Remove="Resources\Images\o9p.png" />
+	  <None Remove="Resources\Images\order.png" />
+	  <None Remove="Resources\Images\order29.png" />
+	  <None Remove="Resources\Images\orders29.png" />
+	  <None Remove="Resources\Images\persbutton29.png" />
+	  <None Remove="Resources\Images\power.png" />
+	  <None Remove="Resources\Images\PRINTbutton29.png" />
+	  <None Remove="Resources\Images\red.png" />
+	  <None Remove="Resources\Images\search.png" />
+	  <None Remove="Resources\Images\setting.png" />
+	  <None Remove="Resources\Images\spliticon.png" />
+	  <None Remove="Resources\Images\subgroup.png" />
+	  <None Remove="Resources\Images\tprinter.png" />
+	  <None Remove="Resources\Images\trash29.png" />
+	  <None Remove="Resources\Images\trash29red.png" />
+	  <None Remove="Resources\Images\trinterc.png" />
+	  <None Remove="Resources\Images\voucher64.png" />
+	  <None Remove="Resources\Images\YELLOW.png" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <MauiSplashScreen Include="Resources\Images\logqua.svg" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="CommunityToolkit.Maui" Version="11.1.0" />
+		<PackageReference Include="CommunityToolkit.Maui.Core" Version="11.1.0" />
+		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.2" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="9.0.2" />
+		<PackageReference Include="Microsoft.Maui.Controls" Version="9.0.40" />
+		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="9.0.40" />
+  		<PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.2" />
+		<PackageReference Include="MySql.Data" Version="9.2.0" />
+		<PackageReference Include="MySqlConnector" Version="2.4.0" />
+		<PackageReference Include="Syncfusion.Licensing" Version="28.2.6" />
+		<PackageReference Include="Syncfusion.Maui.Buttons" Version="28.2.6" />
+		<PackageReference Include="Syncfusion.Maui.Core" Version="28.2.6" />
+		<PackageReference Include="Syncfusion.Maui.ListView" Version="28.2.6" />
+		<PackageReference Include="Syncfusion.Maui.Sliders" Version="28.2.6" />
+		<PackageReference Include="Syncfusion.Maui.TabView" Version="28.2.6" />
+		<PackageReference Include="Syncfusion.Maui.TreeView" Version="28.2.6" />
+		
+	</ItemGroup>
+
+	<ItemGroup>
+	  <MauiXaml Update="CombinedPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="DiscountPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="ExtrasOptionsPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="FlyoutCategoriesView.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="ItemsPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="MidCashReg.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="NumOrderPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="OrderFlyOut.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="OrderIntake.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="OrderPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Orders.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="OrderStatusPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="OrderTab.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="PaymentModalPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="StatisticsPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="TablePage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="TableTempl.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="Modules\" />
+	  <Folder Include="Services\Repositories\" />
+	  <Folder Include="ViewModels\" />
+	  <Folder Include="Views\NewFolder\" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Resource Include="addorder.png">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </Resource>
+	
+	</ItemGroup>
+
+	<ProjectExtensions><VisualStudio><UserProperties XamarinHotReloadDebuggerTimeoutExceptionOlymPOSHideInfoBar="True" /></VisualStudio></ProjectExtensions>
+
+</Project>

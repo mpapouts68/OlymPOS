@@ -1,0 +1,66 @@
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="OlymPOS.ItemsPage"
+             xmlns:local="clr-namespace:OlymPOS"
+             xmlns:converters="clr-namespace:OlymPOS"
+             Title="Items"
+             BackgroundColor="#1f1f1f">
+
+    <ContentPage.BindingContext>
+        <local:ItemsViewModel />
+    </ContentPage.BindingContext>
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:QuantityToImageConverter x:Key="QuantityToImageConverter"/>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    <ScrollView>
+    <VerticalStackLayout Spacing="10" Padding="10">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <Entry x:Name="searchEntry" Placeholder="Search items..." TextColor="White" Grid.Column="0" Completed="OnSearchClicked" />
+                <ImageButton Source="search.png" Clicked="OnSearchClicked" WidthRequest="30" HeightRequest="30" Grid.Column="2"/>
+                <ImageButton Source="microphone.png" Clicked="OnSpeakButtonClicked" WidthRequest="30" HeightRequest="30" Grid.Column="1"/>
+            </Grid>
+
+            <CollectionView ItemsSource="{Binding DisplayedProducts}" VerticalScrollBarVisibility="Always" SelectionMode="Single">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Grid Padding="3" ColumnSpacing="10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+
+                        <Image Grid.Column="0" 
+                               Source="{Binding Quantity, Converter={StaticResource QuantityToImageConverter}}" 
+                               WidthRequest="40" HeightRequest="40">
+                        <Image.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="OnImageTapped"/>
+                        </Image.GestureRecognizers>
+                        </Image>
+                        <Label Text="{Binding Description}" Grid.Column="1" FontSize="16" 
+                               FontAttributes="Bold" FontFamily="Tahoma" TextColor="White"
+                               VerticalOptions="Center" HorizontalOptions="Start"/>
+
+                        <ImageButton Source="edit_remove.png" Grid.Column="2" Clicked="OnDecreaseClicked"
+                                     CommandParameter="{Binding .}"
+                                     WidthRequest="30" HeightRequest="30"/>
+
+                        <ImageButton Source="add24.png" Grid.Column="3" Clicked="OnIncreaseClicked"
+                                     CommandParameter="{Binding .}"
+                                     WidthRequest="30" HeightRequest="30"/>
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+        
+    </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

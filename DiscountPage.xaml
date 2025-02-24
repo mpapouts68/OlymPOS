@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:OlymPOS"
+             x:Class="OlymPOS.DiscountPage"
+             Title="DiscountPage"
+             BackgroundColor="#00000000">
+    <VerticalStackLayout
+        HorizontalOptions="Center"
+        VerticalOptions="Center"
+        Spacing="20"
+        Padding="20"
+        BackgroundColor="LightGray"
+        WidthRequest="300"
+        HeightRequest="260">
+
+        <HorizontalStackLayout>
+            <RadioButton x:Name="percentageRadioButton" Content="Percentage" Value="Percentage" IsChecked="True"
+                          GroupName="DiscountType"/>
+            <RadioButton x:Name="amountRadioButton" Content="Amount" Value="Amount"
+                          GroupName="DiscountType"/>
+        </HorizontalStackLayout>
+
+        <Entry x:Name="numericEntry"
+               Keyboard="Numeric"
+               Placeholder="Enter discount"
+               HorizontalOptions="FillAndExpand" />
+
+        <HorizontalStackLayout>
+            <Button Text="OK" HorizontalOptions="FillAndExpand" Clicked="OnOkClicked"/>
+            <Button Text="Cancel" HorizontalOptions="FillAndExpand" Clicked="OnCancelClicked"/>
+        </HorizontalStackLayout>
+
+    </VerticalStackLayout>
+</ContentPage>
