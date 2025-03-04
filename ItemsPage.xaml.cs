@@ -1,39 +1,68 @@
-using Microsoft.Maui.Controls;
-using System;
-using Microsoft.Maui.ApplicationModel;
-using OlymPOS;
+using OlymPOS.ViewModels;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace OlymPOS
 {
     public partial class ItemsPage : ContentPage
     {
+        private ProductViewModel _viewModel;
+
         public ItemsPage()
         {
             InitializeComponent();
-            MessagingCenter.Subscribe<Application, string>(this, "SpeechToText", (sender, arg) =>
-            {
-                Device.BeginInvokeOnMainThread(() => searchEntry.Text = arg);
+
+            // Get the view model from DI
+            _viewModel = Application.Current.Handler.MauiContext.Services.GetService<ProductViewModel>();
+            BindingContext = _viewModel;
+
+            // For speech to text results
+            MessagingCenter.Subscribe<Application, string>(Application.Current, "SpeechToText", (sender, result) => {
+                if (!string.IsNullOrEmpty(result))
+                {
+                    _viewModel.SearchQuery = result;
+                    _viewModel.SearchCommand.Execute(null);
+                }
             });
         }
 
-        protected override void OnAppearing()
+        protected override async void OnAppearing()
         {
             base.OnAppearing();
-            // Any additional logic needed when the page appears
+
+            // Initialize the view model
+            if (_viewModel != null && !_viewModel.IsInitialized)
+            {
+                await _viewModel.InitializeAsync();
+            }
         }
 
         protected override void OnDisappearing()
         {
             base.OnDisappearing();
-            MessagingCenter.Unsubscribe<Application, string>(this, "SpeechToText");
+
+            // Unsubscribe from messages
+            MessagingCenter.Unsubscribe<Application, string>(Application.Current, "SpeechToText");
+        }
+
+        // For backwards compatibility with existing code
+        private void OnSearchClicked(object sender, EventArgs e)
+        {
+            _viewModel?.SearchCommand?.Execute(null);
         }
 
         private void OnIncreaseClicked(object sender, EventArgs e)
         {
-            if (sender is ImageButton btn && btn.BindingContext is Product product)
+            if (sender is ImageButton button && button.CommandParameter is Product product)
             {
-                var viewModel = BindingContext as ItemsViewModel;
-                viewModel?.IncreaseQuantity(product);
+                _viewModel?.IncreaseQuantityCommand?.Execute(product);
+            }
+        }
+
+        private void OnDecreaseClicked(object sender, EventArgs e)
+        {
+            if (sender is ImageButton button && button.CommandParameter is Product product)
+            {
+                _viewModel?.DecreaseQuantityCommand?.Execute(product);
             }
         }
 
@@ -41,51 +70,14 @@ namespace OlymPOS
         {
             if (sender is Image image && image.BindingContext is Product product)
             {
-                var viewModel = BindingContext as ItemsViewModel;
-                viewModel?.IncreaseQuantity(product);
-            }
-        }
-
-        private void OnDecreaseClicked(object sender, EventArgs e)
-        {
-            if (sender is ImageButton btn && btn.BindingContext is Product product)
-            {
-                var viewModel = BindingContext as ItemsViewModel;
-                viewModel?.DecreaseQuantity(product);
-            }
-        }
-
-        private void OnSearchClicked(object sender, EventArgs e)
-        {
-            string searchText = searchEntry.Text;
-            if (!string.IsNullOrEmpty(searchText) && searchText.Length >= 3)
-            {
-                if (this.BindingContext is ItemsViewModel viewModel)
-                {
-                    viewModel.PerformSearch(searchText);
-                    searchEntry.Text = string.Empty; // Clear the search entry after search
-                }
+                _viewModel?.IncreaseQuantityCommand?.Execute(product);
             }
         }
 
         private async void OnSpeakButtonClicked(object sender, EventArgs e)
         {
-            Console.WriteLine("OnSpeakButtonClicked is Started");
-            var status = await Permissions.CheckStatusAsync<Permissions.Microphone>();
-            if (status != PermissionStatus.Granted)
-            {
-                status = await Permissions.RequestAsync<Permissions.Microphone>();
-            }
-
-            if (status == PermissionStatus.Granted)
-            {
-                DependencyService.Get<ISpeechToText>().StartSpeechToText();
-                Console.WriteLine("OnSpeakButtonClicked is Passed");
-            }
-            else
-            {
-                await DisplayAlert("Microphone Permission", "Permission to use the microphone is required for speech to text.", "OK");
-            }
+            await _viewModel?.SpeechToTextCommand?.ExecuteAsync();
         }
     }
 }
+

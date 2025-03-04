@@ -1,4 +1,5 @@
 using System.Windows.Input;
+using OlymPOS.Services;
 
 namespace OlymPOS;
 
@@ -8,6 +9,8 @@ public partial class MidCashReg : ContentPage
 	{
 		InitializeComponent();
 	}
+
+    [Obsolete]
     private async void SendWPrint(object sender, EventArgs e)
     {
         var dbService = new OrderDataService();
@@ -15,6 +18,8 @@ public partial class MidCashReg : ContentPage
         await this.Navigation.PopModalAsync();
 
     }
+
+    [Obsolete]
     private async void SendWiPrint(object sender, EventArgs e)
     {
         var dbService = new OrderDataService();

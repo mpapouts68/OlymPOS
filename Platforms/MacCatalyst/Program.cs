@@ -1,7 +1,7 @@
 ﻿using ObjCRuntime;
 using UIKit;
 
-namespace OlymPOSAndroid.Platforms.MacCatalyst
+namespace OlymPOS.Platforms.MacCatalyst
 {
     public class Program
     {

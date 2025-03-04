@@ -1,38 +1,38 @@
 ﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using OlymPOS;
+using OlymPOS.Models;
+using OlymPOS.Repositories.Interfaces;
 
-namespace OlymPOS;
-
-public class OrderGroupView : INotifyPropertyChanged
+namespace OlymPOS.ViewModels // Adjusted namespace for consistency
 {
-    private ObservableCollection<ProductGroup> productCategories;
-
-    public ObservableCollection<ProductGroup> ProductCategories
+    public class OrderGroupView : INotifyPropertyChanged
     {
-        get => productCategories;
-        set
+        private readonly IDataService _dataService;
+
+        private ObservableCollection<ProductGroup> productCategories;
+
+        public ObservableCollection<ProductGroup> ProductCategories
         {
-            productCategories = value;
-            OnPropertyChanged(nameof(ProductCategories));
+            get => productCategories;
+            set
+            {
+                productCategories = value;
+                OnPropertyChanged(nameof(ProductCategories));
+            }
+        }
+
+        public OrderGroupView(IDataService dataService)
+        {
+            _dataService = dataService;
+            ProductCategories = _dataService.ProductCategories; // Use injected service
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
-
-    public OrderGroupView()
-    {
-
-        ProductCategories = DataService.Instance.ProductCategories;
-    }
-
-
-
-    public event PropertyChangedEventHandler PropertyChanged;
-
-    protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-    {
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-    }
 }
-
-

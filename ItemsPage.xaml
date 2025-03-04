@@ -1,66 +1,110 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="OlymPOS.ItemsPage"
-             xmlns:local="clr-namespace:OlymPOS"
+             xmlns:viewmodels="clr-namespace:OlymPOS.ViewModels"
              xmlns:converters="clr-namespace:OlymPOS"
+             x:Class="OlymPOS.ItemsPage"
+             x:DataType="viewmodels:ProductViewModel"
              Title="Items"
              BackgroundColor="#1f1f1f">
 
-    <ContentPage.BindingContext>
-        <local:ItemsViewModel />
-    </ContentPage.BindingContext>
+    <!-- ViewModel will be set in code-behind from the DI container -->
+
     <ContentPage.Resources>
         <ResourceDictionary>
             <converters:QuantityToImageConverter x:Key="QuantityToImageConverter"/>
         </ResourceDictionary>
     </ContentPage.Resources>
-    <ScrollView>
-    <VerticalStackLayout Spacing="10" Padding="10">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
-                <Entry x:Name="searchEntry" Placeholder="Search items..." TextColor="White" Grid.Column="0" Completed="OnSearchClicked" />
-                <ImageButton Source="search.png" Clicked="OnSearchClicked" WidthRequest="30" HeightRequest="30" Grid.Column="2"/>
-                <ImageButton Source="microphone.png" Clicked="OnSpeakButtonClicked" WidthRequest="30" HeightRequest="30" Grid.Column="1"/>
-            </Grid>
 
-            <CollectionView ItemsSource="{Binding DisplayedProducts}" VerticalScrollBarVisibility="Always" SelectionMode="Single">
-            <CollectionView.ItemTemplate>
-                <DataTemplate>
-                    <Grid Padding="3" ColumnSpacing="10">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
 
-                        <Image Grid.Column="0" 
-                               Source="{Binding Quantity, Converter={StaticResource QuantityToImageConverter}}" 
-                               WidthRequest="40" HeightRequest="40">
-                        <Image.GestureRecognizers>
-                                <TapGestureRecognizer Tapped="OnImageTapped"/>
-                        </Image.GestureRecognizers>
-                        </Image>
-                        <Label Text="{Binding Description}" Grid.Column="1" FontSize="16" 
-                               FontAttributes="Bold" FontFamily="Tahoma" TextColor="White"
-                               VerticalOptions="Center" HorizontalOptions="Start"/>
+        <!-- Search Bar -->
+        <Grid Grid.Row="0" Padding="10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
 
-                        <ImageButton Source="edit_remove.png" Grid.Column="2" Clicked="OnDecreaseClicked"
-                                     CommandParameter="{Binding .}"
-                                     WidthRequest="30" HeightRequest="30"/>
+            <Entry Placeholder="Search items..." 
+                   Text="{Binding SearchQuery}" 
+                   Grid.Column="0" 
+                   ReturnCommand="{Binding SearchCommand}" 
+                   TextColor="White" />
 
-                        <ImageButton Source="add24.png" Grid.Column="3" Clicked="OnIncreaseClicked"
-                                     CommandParameter="{Binding .}"
-                                     WidthRequest="30" HeightRequest="30"/>
-                    </Grid>
-                </DataTemplate>
-            </CollectionView.ItemTemplate>
-        </CollectionView>
-        
-    </VerticalStackLayout>
-    </ScrollView>
+            <ImageButton Source="microphone.png" 
+                        Command="{Binding SpeechToTextCommand}" 
+                        WidthRequest="30" 
+                        HeightRequest="30" 
+                        Grid.Column="1"/>
+
+            <ImageButton Source="search.png" 
+                        Command="{Binding SearchCommand}" 
+                        WidthRequest="30" 
+                        HeightRequest="30" 
+                        Grid.Column="2"/>
+        </Grid>
+
+        <!-- Loading Indicator -->
+        <ActivityIndicator Grid.Row="1" 
+                          IsRunning="{Binding IsBusy}" 
+                          IsVisible="{Binding IsBusy}" 
+                          Color="SteelBlue" 
+                          HorizontalOptions="Center" 
+                          VerticalOptions="Center"/>
+
+        <!-- Products List -->
+        <ScrollView Grid.Row="1" IsVisible="{Binding IsBusy, Converter={StaticResource InvertedBoolConverter}}">
+            <CollectionView ItemsSource="{Binding Products}" 
+                           VerticalScrollBarVisibility="Always" 
+                           SelectionMode="None">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Padding="3" ColumnSpacing="10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+
+                            <Image Grid.Column="0" 
+                                   Source="{Binding Quantity, Converter={StaticResource QuantityToImageConverter}}" 
+                                   WidthRequest="40" HeightRequest="40">
+                                <Image.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding IncreaseQuantityCommand, Source={RelativeSource AncestorType={x:Type viewmodels:ProductViewModel}}}" 
+                                                         CommandParameter="{Binding .}"/>
+                                </Image.GestureRecognizers>
+                            </Image>
+
+                            <Label Text="{Binding Description}" 
+                                   Grid.Column="1" 
+                                   FontSize="16" 
+                                   FontAttributes="Bold" 
+                                   TextColor="White"
+                                   VerticalOptions="Center" 
+                                   HorizontalOptions="Start"/>
+
+                            <ImageButton Source="edit_remove.png" 
+                                        Grid.Column="2" 
+                                        Command="{Binding DecreaseQuantityCommand, Source={RelativeSource AncestorType={x:Type viewmodels:ProductViewModel}}}" 
+                                        CommandParameter="{Binding .}"
+                                        WidthRequest="30" 
+                                        HeightRequest="30"/>
+
+                            <ImageButton Source="add24.png" 
+                                        Grid.Column="3" 
+                                        Command="{Binding IncreaseQuantityCommand, Source={RelativeSource AncestorType={x:Type viewmodels:ProductViewModel}}}" 
+                                        CommandParameter="{Binding .}"
+                                        WidthRequest="30" 
+                                        HeightRequest="30"/>
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </ScrollView>
+    </Grid>
 </ContentPage>

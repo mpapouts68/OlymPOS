@@ -33,18 +33,16 @@ public partial class OrderTab : ContentPage
             SetItems();
 
         }
-        internal void SetItems()
-        {
-            Items = new TabItemCollection();
-            OrderPage page1 = new OrderPage();
-            ItemsPage page2 = new ItemsPage();
-            ExtrasOptionsPage page3 = new ExtrasOptionsPage();
-            Orders page4 = new Orders();
-            Items.Add(new SfTabItem { Content = page1.Content, Header = "Categories"});
-            Items.Add(new SfTabItem { Content = page2.Content, Header = "Items" });
-            Items.Add(new SfTabItem { Content = page3.Content, Header = "Extra/Options" });
-            Items.Add(new SfTabItem { Content = page4.Content, Header = "Order" });
-        }
+    internal void SetItems()
+    {
+        Items =
+        [
+            //new SfTabItem { Content = new OrderPage().Content, Header = "Categories"},
+            new SfTabItem { Content = new ItemsPage().Content, Header = "Items" },
+            new SfTabItem { Content = new ExtrasOptionsPage().Content, Header = "Extra/Options" }
+            //new SfTabItem { Content = new Orders().Content, Header = "Order" }
+        ];
+    }
     }
 
 

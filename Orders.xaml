@@ -1,87 +1,98 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
-             xmlns:local="clr-namespace:OlymPOS"
+             xmlns:viewmodels="clr-namespace:OlymPOS.ViewModels"
              x:Class="OlymPOS.Orders"
+             x:DataType="viewmodels:OrderViewModel"
              Title="Orders">
-    <ContentPage.BindingContext>
-        <local:OrderViewModel />
-    </ContentPage.BindingContext>
+
+    <!-- ViewModel will be set in code-behind from the DI container -->
 
     <Grid RowSpacing="10">
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <CollectionView ItemsSource="{Binding Orders}" Grid.Row="0">
+        <!-- Order Info Header -->
+        <StackLayout Grid.Row="0" Padding="10" BackgroundColor="SteelBlue">
+            <Label Text="{Binding ActiveOrder.Description}" FontSize="18" FontAttributes="Bold" TextColor="White"/>
+            <Label Text="{Binding OrderTotal, StringFormat='Total: {0:C}'}" FontSize="16" TextColor="White"/>
+            <Label Text="{Binding OrderTotalAfterDiscount, StringFormat='After Discount: {0:C}'}" 
+                   IsVisible="{Binding ActiveOrder.HasDiscount}"
+                   FontSize="16" TextColor="White"/>
+        </StackLayout>
+
+        <!-- Order Items -->
+        <CollectionView ItemsSource="{Binding OrderItems}" Grid.Row="1">
             <CollectionView.ItemTemplate>
                 <DataTemplate>
-                    <StackLayout Padding="10">
-                        <!-- Basic Order Information -->
-                        <Label Text="{Binding OrderID}" FontAttributes="Bold" />
-                        <Label Text="{Binding OrderTotalAfterD, StringFormat='Total: {0:C}'}" />
+                    <mct:Expander ExpandedChanged="OrderItemExpander_Expanded" Margin="0,5,0,0">
+                        <mct:Expander.Header>
+                            <Grid ColumnDefinitions="Auto, *, Auto" Padding="10,5">
+                                <Label Text="{Binding Quantity}" FontAttributes="Bold" Grid.Column="0" VerticalOptions="Center"/>
+                                <Label Text="{Binding Description}" Grid.Column="1" VerticalOptions="Center" Margin="10,0,0,0"/>
+                                <Label Text="{Binding Price, StringFormat='{0:C}'}" Grid.Column="2" VerticalOptions="Center"/>
+                            </Grid>
+                        </mct:Expander.Header>
 
-                        <!-- Order Items -->
-                        <CollectionView ItemsSource="{Binding OrderItems}">
-                            <CollectionView.ItemTemplate>
-                                <DataTemplate>
-                                    <mct:Expander ExpandedChanged="orderExpander_Expanded">
-                                        <mct:Expander.Header>
-                                            <StackLayout Orientation="Horizontal" Padding="5" Margin="0" Spacing="10">
-                                                <Label Text="{Binding Quantity}" FontAttributes="Bold" />
-                                                <Label Text="{Binding Description}" FontAttributes="Bold" />
-                                                <Label Text="{Binding Price, StringFormat='{0:C}'}" HorizontalOptions="EndAndExpand" />
-                                            </StackLayout>
-                                        </mct:Expander.Header>
-                                        <mct:Expander.Content>
-                                            <CollectionView ItemsSource="{Binding OrderExtras}">
-                                                <CollectionView.ItemTemplate>
-                                                    <DataTemplate>
-                                                        <StackLayout Orientation="Horizontal" Padding="5">
-                                                            <Label Text="{Binding Description}" FontAttributes="Italic"/>
-                                                            <Label Text="{Binding quantity}" HorizontalOptions="EndAndExpand" />
-                                                        </StackLayout>
-                                                    </DataTemplate>
-                                                </CollectionView.ItemTemplate>
-                                            </CollectionView>
-                                        </mct:Expander.Content>
-
-                                    </mct:Expander>
-                                </DataTemplate>
-                            </CollectionView.ItemTemplate>
-                        </CollectionView>
-                    </StackLayout>
+                        <mct:Expander.Content>
+                            <StackLayout Padding="20,0,10,10">
+                                <!-- Order Item Extras -->
+                                <CollectionView ItemsSource="{Binding OrderExtras}" EmptyView="No extras for this item">
+                                    <CollectionView.ItemTemplate>
+                                        <DataTemplate>
+                                            <Grid ColumnDefinitions="Auto, *, Auto" Padding="5,2">
+                                                <Label Text="•" Grid.Column="0" VerticalOptions="Center"/>
+                                                <Label Text="{Binding Description}" Grid.Column="1" VerticalOptions="Center" Margin="5,0,0,0"/>
+                                                <Label Text="{Binding quantity}" Grid.Column="2" VerticalOptions="Center"/>
+                                            </Grid>
+                                        </DataTemplate>
+                                    </CollectionView.ItemTemplate>
+                                </CollectionView>
+                            </StackLayout>
+                        </mct:Expander.Content>
+                    </mct:Expander>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
 
+        <!-- Loading Indicator -->
+        <ActivityIndicator Grid.Row="1" 
+                          IsRunning="{Binding IsBusy}" 
+                          IsVisible="{Binding IsBusy}" 
+                          Color="SteelBlue" 
+                          HorizontalOptions="Center" 
+                          VerticalOptions="Center"/>
+
         <!-- Footer Buttons -->
-        <StackLayout Grid.Row="1" Orientation="Horizontal" HorizontalOptions="Center" VerticalOptions="End" Spacing="15" Padding="10">
+        <StackLayout Grid.Row="2" Orientation="Horizontal" HorizontalOptions="Center" Spacing="15" Padding="10" BackgroundColor="#222222">
             <VerticalStackLayout Spacing="2">
                 <ImageButton Source="tprinter.png" Command="{Binding SendCommand}" WidthRequest="50" HeightRequest="50" />
-                <Label Text="Send" HorizontalTextAlignment="Center" FontAttributes="Bold" />
+                <Label Text="Send" HorizontalTextAlignment="Center" FontAttributes="Bold" TextColor="White"/>
             </VerticalStackLayout>
             <VerticalStackLayout Spacing="2">
                 <ImageButton Source="move.png" Command="{Binding MoveCommand}" WidthRequest="50" HeightRequest="50" />
-                <Label Text="Move" HorizontalTextAlignment="Center" FontAttributes="Bold" />
+                <Label Text="Move" HorizontalTextAlignment="Center" FontAttributes="Bold" TextColor="White"/>
             </VerticalStackLayout>
             <VerticalStackLayout Spacing="2">
                 <ImageButton Source="discount.png" Command="{Binding DiscountCommand}" WidthRequest="50" HeightRequest="50" />
-                <Label Text="Discount" HorizontalTextAlignment="Center" FontAttributes="Bold" />
+                <Label Text="Discount" HorizontalTextAlignment="Center" FontAttributes="Bold" TextColor="White"/>
             </VerticalStackLayout>
             <VerticalStackLayout Spacing="2">
                 <ImageButton Source="spliticon.png" Command="{Binding SplitCommand}" WidthRequest="50" HeightRequest="50" />
-                <Label Text="Split" HorizontalTextAlignment="Center" FontAttributes="Bold" />
+                <Label Text="Split" HorizontalTextAlignment="Center" FontAttributes="Bold" TextColor="White"/>
             </VerticalStackLayout>
             <VerticalStackLayout Spacing="2">
                 <ImageButton Source="cashreg.png" Command="{Binding PayCommand}" WidthRequest="50" HeightRequest="50" />
-                <Label Text="Pay" HorizontalTextAlignment="Center" FontAttributes="Bold"  />
+                <Label Text="Pay" HorizontalTextAlignment="Center" FontAttributes="Bold" TextColor="White"/>
             </VerticalStackLayout>
             <VerticalStackLayout Spacing="2">
                 <ImageButton Source="exit.png" Command="{Binding ExitCommand}" WidthRequest="50" HeightRequest="50" />
-                <Label Text="Exit" HorizontalTextAlignment="Center" FontAttributes="Bold" />
+                <Label Text="Exit" HorizontalTextAlignment="Center" FontAttributes="Bold" TextColor="White"/>
             </VerticalStackLayout>
         </StackLayout>
     </Grid>
 </ContentPage>
+    

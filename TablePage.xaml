@@ -1,19 +1,23 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:syncfusion="clr-namespace:Syncfusion.Maui.Buttons;assembly=Syncfusion.Maui.Buttons"
+             xmlns:viewmodels="clr-namespace:OlymPOS.ViewModels"
              x:Class="OlymPOS.TablePage"
-            
-             
-    BackgroundColor="#1f1f1f">
+             x:DataType="viewmodels:TableViewModel"
+             BackgroundColor="Black">
 
-    <Grid Padding="2" VerticalOptions="Start">
+    <!-- ViewModel will be set in code-behind from the DI container -->
+
+    <Grid Padding="2">
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <!-- Buttons Grid -->
-        <Grid Grid.Row="0" ColumnSpacing="2" Padding="1">
+        <!-- Top Buttons -->
+        <Grid Grid.Row="0" ColumnSpacing="5" Padding="5">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="*" />
@@ -21,76 +25,120 @@
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
 
-            <!-- Orders Button -->
-            <StackLayout Grid.Column="0" BackgroundColor="Black" HorizontalOptions="Center" VerticalOptions="Center" Padding="2">
-                <Image Source="order.png" HeightRequest="40" WidthRequest="200" HorizontalOptions="Center"/>
-                <Label Text="Orders" TextColor="SteelBlue" FontSize="14" FontAttributes="Bold" HorizontalOptions="Center" VerticalOptions="Center"/>
-                <StackLayout.GestureRecognizers>
-                    <TapGestureRecognizer Tapped="Button1_Clicked"/>
-                </StackLayout.GestureRecognizers>
-            </StackLayout>
+            <VerticalStackLayout Grid.Column="0" Padding="5" HorizontalOptions="Center">
+                <Image Source="order.png" HeightRequest="40" WidthRequest="40"/>
+                <Label Text="Orders" TextColor="White" FontSize="14" FontAttributes="Bold" HorizontalOptions="Center"/>
+                <VerticalStackLayout.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding StatisticsCommand}"/>
+                </VerticalStackLayout.GestureRecognizers>
+            </VerticalStackLayout>
 
-            <StackLayout Grid.Column="1" BackgroundColor="Black" HorizontalOptions="Center" VerticalOptions="Center"  Padding="2">
-                <Image Source="exchange.png" HeightRequest="40" WidthRequest="200" HorizontalOptions="Center"/>
-                <Label Text="Stats" TextColor="SteelBlue" FontSize="14" FontAttributes="Bold" HorizontalOptions="Center" VerticalOptions="Center"/>
-                <StackLayout.GestureRecognizers>
-                    <TapGestureRecognizer Tapped="Button2_Clicked"/>
-                </StackLayout.GestureRecognizers>
-            </StackLayout>
+            <VerticalStackLayout Grid.Column="1" Padding="5" HorizontalOptions="Center">
+                <Image Source="stats.png" HeightRequest="40" WidthRequest="40"/>
+                <Label Text="Stats" TextColor="White" FontSize="14" FontAttributes="Bold" HorizontalOptions="Center"/>
+                <VerticalStackLayout.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding StatisticsCommand}"/>
+                </VerticalStackLayout.GestureRecognizers>
+            </VerticalStackLayout>
 
-            <StackLayout Grid.Column="2" BackgroundColor="Black" HorizontalOptions="Center" VerticalOptions="Center" Padding="2">
-                <Image Source="flower.png" HeightRequest="40" WidthRequest="200" HorizontalOptions="Center"/>
-                <Label Text="Settings" TextColor="SteelBlue" FontSize="14" FontAttributes="Bold" HorizontalOptions="Center" VerticalOptions="Center"/>
-                <StackLayout.GestureRecognizers>
-                    <TapGestureRecognizer Tapped="Button3_Clicked"/>
-                </StackLayout.GestureRecognizers>
-            </StackLayout>
+            <VerticalStackLayout Grid.Column="2" Padding="5" HorizontalOptions="Center">
+                <Image Source="settings.png" HeightRequest="40" WidthRequest="40"/>
+                <Label Text="Settings" TextColor="White" FontSize="14" FontAttributes="Bold" HorizontalOptions="Center"/>
+                <VerticalStackLayout.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding SettingsCommand}"/>
+                </VerticalStackLayout.GestureRecognizers>
+            </VerticalStackLayout>
 
-            <StackLayout Grid.Column="3" BackgroundColor="Black" HorizontalOptions="Center" VerticalOptions="Center"  Padding="2">
-                <Image Source="power.png" HeightRequest="40" WidthRequest="200" HorizontalOptions="Center"/>
-                <Label Text="Exit" TextColor="SteelBlue" FontSize="14" FontAttributes="Bold" HorizontalOptions="Center" VerticalOptions="Center"/>
-                <StackLayout.GestureRecognizers>
-                    <TapGestureRecognizer Tapped="Button4_Clicked"/>
-                </StackLayout.GestureRecognizers>
-            </StackLayout>
+            <VerticalStackLayout Grid.Column="3" Padding="5" HorizontalOptions="Center">
+                <Image Source="exit64.png" HeightRequest="40" WidthRequest="40"/>
+                <Label Text="Exit" TextColor="Red" FontSize="14" FontAttributes="Bold" HorizontalOptions="Center"/>
+                <VerticalStackLayout.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding LogoutCommand}"/>
+                </VerticalStackLayout.GestureRecognizers>
+            </VerticalStackLayout>
         </Grid>
 
-        <!-- CollectionView for Servicing Points -->
-        <StackLayout Grid.Row="1" Padding="2" VerticalOptions="Start" BackgroundColor="Black" Margin="0,2,0,0">
-            <StackLayout x:Name="areaRadioButtonGroup" Orientation="Horizontal" HorizontalOptions="Center" Spacing="10">
-                <!-- Toggle buttons will be dynamically added here in code-behind -->
-            </StackLayout>
-
-            <CollectionView x:Name="servicingPointsCollectionView" ItemsSource="{Binding ServicingPoints}" VerticalScrollBarVisibility="Always" SelectionMode="Single" SelectionChanged="OnCollectionViewSelectionChanged">
+        <!-- Area Selection -->
+        <HorizontalStackLayout Grid.Row="1" HorizontalOptions="Center" Spacing="10" Padding="10">
+            <CollectionView ItemsSource="{Binding Areas}" 
+                            SelectionMode="Single" 
+                            SelectedItem="{Binding SelectedArea}"
+                            HorizontalOptions="Center">
                 <CollectionView.ItemsLayout>
-                    <GridItemsLayout Orientation="Vertical" Span="4" />
+                    <LinearItemsLayout Orientation="Horizontal" ItemSpacing="10"/>
                 </CollectionView.ItemsLayout>
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
-                        <StackLayout Padding="0" Margin="5">
-                            <Image HeightRequest="50" WidthRequest="50">
-                                <Image.Triggers>
-                                    <DataTrigger TargetType="Image" Binding="{Binding Active}" Value="True">
-                                        <Setter Property="Source" Value="red.png"/>
-                                    </DataTrigger>
-                                    <DataTrigger TargetType="Image" Binding="{Binding Active}" Value="False">
-                                        <Setter Property="Source" Value="green.png"/>
-                                    </DataTrigger>
-                                </Image.Triggers>
-                            </Image>
-                            <Label Text="{Binding FullDescription}"
-                                   FontAttributes="Bold"
-                                   HorizontalOptions="Center"
-                                   VerticalOptions="Center"
-                                   HorizontalTextAlignment="Center"
-                                   VerticalTextAlignment="Center"
-                                   FontSize="14"
-                                   TextColor="White"
-                                   LineBreakMode="WordWrap"/>
-                        </StackLayout>
+                        <Border Stroke="White" 
+                                StrokeThickness="1" 
+                                BackgroundColor="SteelBlue" 
+                                WidthRequest="120" 
+                                HeightRequest="40">
+                            <Label Text="{Binding Description}" 
+                                   HorizontalOptions="Center" 
+                                   VerticalOptions="Center" 
+                                   TextColor="White" 
+                                   FontSize="16"/>
+                        </Border>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>
-        </StackLayout>
+        </HorizontalStackLayout>
+
+        <!-- Loading Indicator -->
+        <ActivityIndicator Grid.Row="2" 
+                          IsRunning="{Binding IsBusy}" 
+                          IsVisible="{Binding IsBusy}" 
+                          Color="SteelBlue" 
+                          HorizontalOptions="Center" 
+                          VerticalOptions="Center"/>
+
+        <!-- Table List -->
+        <CollectionView Grid.Row="2" 
+                        ItemsSource="{Binding Tables}"
+                        SelectionMode="Single"
+                        SelectionChangedCommand="{Binding SelectTableCommand}"
+                        SelectionChangedCommandParameter="{Binding SelectedItem, Source={RelativeSource Self}}"
+                        IsVisible="{Binding IsBusy, Converter={StaticResource InvertedBoolConverter}}">
+            <CollectionView.ItemsLayout>
+                <GridItemsLayout Orientation="Vertical" Span="4" />
+            </CollectionView.ItemsLayout>
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Border Stroke="White" StrokeThickness="0" Padding="5" Margin="5">
+                        <Grid>
+                            <VerticalStackLayout HorizontalOptions="Center" Spacing="5">
+                                <Image HeightRequest="50" WidthRequest="50">
+                                    <Image.Triggers>
+                                        <DataTrigger TargetType="Image" Binding="{Binding Active}" Value="True">
+                                            <Setter Property="Source" Value="red.png"/>
+                                        </DataTrigger>
+                                        <DataTrigger TargetType="Image" Binding="{Binding Active}" Value="False">
+                                            <Setter Property="Source" Value="green.png"/>
+                                        </DataTrigger>
+                                    </Image.Triggers>
+                                </Image>
+                                <Label Text="{Binding FullDescription}" 
+                                       TextColor="White"
+                                       FontSize="14" 
+                                       HorizontalTextAlignment="Center"/>
+                            </VerticalStackLayout>
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+        <!-- Refresh Button -->
+        <Button Grid.Row="2" 
+                Text="Refresh" 
+                Command="{Binding RefreshCommand}" 
+                HorizontalOptions="End" 
+                VerticalOptions="End" 
+                Margin="10" 
+                BackgroundColor="SteelBlue" 
+                TextColor="White" 
+                FontSize="14"/>
     </Grid>
 </ContentPage>
+    

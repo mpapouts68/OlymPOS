@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OlymPOS;
-
-public interface ISpeechToText
+namespace OlymPOS.Services.Repositories
 {
-    void StartSpeechToText();
+    class ProductGroupRepository
+    {
+    }
 }

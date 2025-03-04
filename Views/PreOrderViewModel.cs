@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Windows.Input;
 using OlymPOS;
+using OlymPOS.Models;
 
 namespace OlymPOS
 {

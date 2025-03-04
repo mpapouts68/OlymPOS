@@ -1,94 +1,60 @@
-using OlymPOS;
-using System.Collections.ObjectModel;
+﻿using Microsoft.Extensions.Logging;
+using Microsoft.Maui.Controls;
+using OlymPOS.ViewModels;
+using OlymPOS.Models;
 
-namespace OlymPOS;
-
-public partial class CombinedPage : ContentPage
+namespace OlymPOS.Views
 {
-    public CombinedPage()
+    public partial class CombinedPage : ContentPage
     {
-        InitializeComponent();
-    }
+        private readonly CombinedViewModel _viewModel;
+        private readonly ILogger<CombinedPage> _logger;
+        private const int MinSearchLength = 3;
 
-
-    private void OnSearchClicked(object sender, EventArgs e)
-    {
-        string searchText = searchEntry.Text;
-        if (!string.IsNullOrEmpty(searchText) && searchText.Length >= 3)
+        public CombinedPage(CombinedViewModel viewModel, ILogger<CombinedPage> logger)
         {
-            if (this.BindingContext is CombinedViewModel viewModel)
+            _viewModel = viewModel;
+            _logger = logger;
+            InitializeComponent();
+            BindingContext = _viewModel;
+            _viewModel.LoadFavorites();
+        }
+
+        private async void OnSearchClicked(object sender, EventArgs e)
+        {
+            string searchText = searchEntry.Text?.Trim();
+            if (string.IsNullOrEmpty(searchText) || searchText.Length < MinSearchLength)
             {
-                viewModel.PerformSearch(searchText);
-                searchEntry.Text = string.Empty; // Clear the search entry after search
+                await DisplayAlert("Search", $"Enter at least {MinSearchLength} characters", "OK");
+                return;
+            }
+            _viewModel.PerformSearch(searchText);
+            searchEntry.Text = string.Empty;
+        }
+
+        private void AdjustQuantity(object sender, EventArgs e, bool increase)
+        {
+            if (sender is BindableObject bindable && bindable.BindingContext is Product product)
+            {
+                if (increase)
+                    _viewModel.IncreaseQuantity(product);
+                else
+                    _viewModel.DecreaseQuantity(product);
+            }
+        }
+
+        private void OnIncreaseClicked(object sender, EventArgs e) => AdjustQuantity(sender, e, true);
+        private void OnImageTapped(object sender, EventArgs e) => AdjustQuantity(sender, e, true);
+        private void OnDecreaseClicked(object sender, EventArgs e) => AdjustQuantity(sender, e, false);
+
+        private void TreeView_ItemTapped(object sender, Syncfusion.Maui.TreeView.ItemTappedEventArgs e)
+        {
+            if (e.Node?.Content is ProductGroup item)
+            {
+                ProgSettings.ActGrpid = item.ProductGroupID;
+                _logger?.LogInformation("Selected product group ID: {Id}", item.ProductGroupID);
+                _viewModel.FilterProductsByCategory();
             }
         }
     }
-    private void OnIncreaseClicked(object sender, EventArgs e)
-    {
-        if (sender is ImageButton btn && btn.BindingContext is Product product)
-        {
-            var viewModel = BindingContext as CombinedViewModel;
-            viewModel?.IncreaseQuantity(product);
-        }
-    }
-
-    private void OnImageTapped(object sender, EventArgs e)
-    {
-        if (sender is Image image && image.BindingContext is Product product)
-        {
-            var viewModel = BindingContext as CombinedViewModel;
-            viewModel?.IncreaseQuantity(product);
-        }
-    }
-
-    private void OnDecreaseClicked(object sender, EventArgs e)
-    {
-        if (sender is ImageButton btn && btn.BindingContext is Product product)
-        {
-            var viewModel = BindingContext as CombinedViewModel;
-            viewModel?.DecreaseQuantity(product);
-        }
-    }
-
-    private void TreeView_ItemTapped(object sender, Syncfusion.Maui.TreeView.ItemTappedEventArgs e) // Use the correct EventArgs
-    {
-        var item = e.Node.Content as ProductGroup;
-        if (item != null)
-        {
-            ProgSettings.ActGrpid = item.ProductGroupID;
-            // var details = $"ID: {item.ProductGroupID}\n" +
-            //             $"Description: {item.Description}\n" +
-            //           $"Has Subcategories: {item.Has_Sub}\n" +
-            //          $"Subcategories Count: {item.Subcategories?.Count ?? 0}";
-            //DisplayAlert("Item Details", details, "OK");
-            Console.WriteLine(item.ProductGroupID);
-            // Assuming you have a method to get products by category
-            //var filteredProducts = DataService.Instance.AllProducts.Where(p => p.ProductGroupID == ProgSettings.ActGrpid).ToList();
-            //DisplayedProducts = new ObservableCollection<Product>(filteredProducts);
-            FilterCat();
-
-        }
-    }
-    public void FilterCat()
-    {
-        var viewModel = BindingContext as CombinedViewModel;
-        int catid = ProgSettings.ActGrpid;
-        Console.WriteLine("Filter is fired");
-        viewModel?.FilterProductsByCategory();
-
-    }
-    private void OnExtraClicked(object sender, EventArgs e)
-    {
-                   var viewModel = BindingContext as CombinedViewModel;
-            Console.WriteLine(ProgSettings.Actprodrid);
-           
-            viewModel.ShowExtras();
-         }
 }
-
-
-    
-
-
-
-

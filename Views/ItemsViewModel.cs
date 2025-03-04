@@ -1,15 +1,29 @@
 ﻿using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading.Tasks;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using System.Windows.Input;
-using OlymPOS;
+using Microsoft.Maui.Dispatching;
+using OlymPOS.Models;
+using OlymPOS.Repositories.Interfaces;
 
-namespace OlymPOS
+namespace OlymPOS.ViewModels
 {
     public class ItemsViewModel : INotifyPropertyChanged
     {
+        private readonly IDataService _dataService;
+
         private ObservableCollection<Product> _allProducts;
+        public ObservableCollection<Product> AllProducts
+        {
+            get => _allProducts;
+            set
+            {
+                _allProducts = value;
+                OnPropertyChanged();
+            }
+        }
+
         private ObservableCollection<Product> _displayedProducts;
         public ObservableCollection<Product> DisplayedProducts
         {
@@ -21,65 +35,60 @@ namespace OlymPOS
             }
         }
 
-        public ICommand IncreaseQuantityCommand { get; }
-        public ICommand DecreaseQuantityCommand { get; }
-        public ICommand ShowExtrasCommand { get; }
-
-        public ItemsViewModel()
+        public ItemsViewModel(IDataService dataService)
         {
-            _allProducts = new ObservableCollection<Product>(DataService.Instance.AllProducts); // Assuming this is your data source
-            DisplayedProducts = new ObservableCollection<Product>(_allProducts.Where(p => p.Favorite));
-
-            IncreaseQuantityCommand = new Command<Product>(IncreaseQuantity);
-            DecreaseQuantityCommand = new Command<Product>(DecreaseQuantity);
-            ShowExtrasCommand = new Command<Product>(ShowExtras);
+            _dataService = dataService;
+            AllProducts = new ObservableCollection<Product>(_dataService.AllProducts);
+            DisplayedProducts = new ObservableCollection<Product>(AllProducts.Where(p => p.Favorite));
         }
 
-        public void PerformSearch(string query)
-        {
-            if (string.IsNullOrWhiteSpace(query))
-            {
-                // If the query is empty, filter by favorites again
-                DisplayedProducts = new ObservableCollection<Product>(_allProducts.Where(p => p.Favorite));
-            }
-            else
-            {
-                var lowerQuery = query.ToLower(); // Normalize the query
-                DisplayedProducts = new ObservableCollection<Product>(
-                    _allProducts.Where(p => p.Description.ToLower().Contains(lowerQuery)));
-            }
-        }
-        public void FilterCat()
-        {
-            int catid = ProgSettings.ActGrpid;
-            Console.WriteLine("Filter is fired");
-            //    var lowerQuery = query.ToLower(); // Normalize the query
-            DisplayedProducts = new ObservableCollection<Product>(
-        _allProducts.Where(p => p.ProductGroupID == catid).ToList());
-        }
-
-    
         public void IncreaseQuantity(Product product)
         {
-            // Ensure this method is public and correctly implemented
             MainThread.BeginInvokeOnMainThread(() =>
             {
                 product.Quantity++;
                 Console.WriteLine("Quantity increased for: " + product.Description);
             });
         }
-       public void DecreaseQuantity(Product product)
+
+        public void DecreaseQuantity(Product product)
         {
             MainThread.BeginInvokeOnMainThread(() =>
             {
-                if (product.Quantity > 0) product.Quantity--;
-                Console.WriteLine("Quantity decreased for: " + product.Description);
+                if (product.Quantity > 0)
+                {
+                    product.Quantity--;
+                    Console.WriteLine("Quantity decreased for: " + product.Description);
+                }
             });
         }
 
-        private void ShowExtras(Product product)
+        public Task ShowExtras(Product product)
         {
-            // Logic to show extras form
+            Console.WriteLine($"Showing extras for: {product.Description}");
+            return Task.CompletedTask;
+        }
+
+        public void PerformSearch(string query)
+        {
+            if (string.IsNullOrWhiteSpace(query))
+            {
+                DisplayedProducts = new ObservableCollection<Product>(AllProducts.Where(p => p.Favorite));
+            }
+            else
+            {
+                var lowerQuery = query.ToLower();
+                DisplayedProducts = new ObservableCollection<Product>(
+                    AllProducts.Where(p => p.Description.ToLower().Contains(lowerQuery)));
+            }
+        }
+
+        public void FilterCat()
+        {
+            int catid = ProgSettings.ActGrpid;
+            Console.WriteLine("Filter is fired");
+            DisplayedProducts = new ObservableCollection<Product>(
+                AllProducts.Where(p => p.ProductGroupID == catid));
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

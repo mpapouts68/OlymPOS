@@ -36,6 +36,9 @@ namespace OlymPOS
                 OnPropertyChanged();
             }
         }
+        public int GroupID;
+        public string ProductName;
+
 
         public event PropertyChangedEventHandler PropertyChanged;
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null) =>

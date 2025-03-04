@@ -1,138 +1,119 @@
 ﻿using System.Collections.ObjectModel;
-using Microsoft.Maui.Controls;
 using System.Linq;
-using System.Windows.Input;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using OlymPOS;
+using System.Threading.Tasks;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using OlymPOS.Models;
+using OlymPOS.Repositories.Interfaces; // Added for IDataService
+using OlymPOS.Services;
 
-namespace OlymPOS
+namespace OlymPOS.ViewModels // Corrected namespace
 {
-    public class CombinedViewModel : INotifyPropertyChanged
+    public partial class CombinedViewModel : ObservableObject
     {
-        private ObservableCollection<ProductGroup> productCategories;
-        private ObservableCollection<Product> _allProducts;
-        private ObservableCollection<Product> _displayedProducts;
-        private ProductGroup _selectedProductGroup;
+        private readonly IDataService _dataService;
 
-        public ObservableCollection<ProductGroup> ProductCategories
+        [ObservableProperty]
+        private ObservableCollection<Product> displayedProducts;
+
+        [ObservableProperty]
+        private ObservableCollection<Extra> selectedExtras;
+
+        [ObservableProperty]
+        private ObservableCollection<OrderItem> orderItems;
+
+        public ObservableCollection<ProductGroup> ProductCategories => _dataService.ProductCategories;
+
+        public CombinedViewModel(IDataService dataService)
         {
-            get => productCategories;
-            set
+            _dataService = dataService;
+            DisplayedProducts = new ObservableCollection<Product>();
+            SelectedExtras = new ObservableCollection<Extra>();
+            OrderItems = new ObservableCollection<OrderItem>();
+        }
+
+        public void LoadFavorites()
+        {
+            DisplayedProducts.Clear();
+            foreach (var product in _dataService.FavoriteProducts)
             {
-                productCategories = value;
-                OnPropertyChanged();
+                DisplayedProducts.Add(product);
             }
         }
 
-        public ObservableCollection<Product> DisplayedProducts
+        public void PerformSearch(string searchText)
         {
-            get => _displayedProducts;
-            set
+            DisplayedProducts.Clear();
+            var results = _dataService.AllProducts
+                .Where(p => p.Description.Contains(searchText, StringComparison.OrdinalIgnoreCase));
+            foreach (var product in results)
             {
-                _displayedProducts = value;
-                OnPropertyChanged();
+                DisplayedProducts.Add(product);
             }
         }
 
-        public ProductGroup SelectedProductGroup
+        public void IncreaseQuantity(Product product)
         {
-            get => _selectedProductGroup;
-            set
+            var orderItem = OrderItems.FirstOrDefault(oi => oi.ProductID == product.ProductID);
+            if (orderItem == null)
             {
-                _selectedProductGroup = value;
-                OnPropertyChanged();
-                FilterProductsByCategory();
+                orderItem = new OrderItem
+                {
+                    ProductID = product.ProductID,
+                    Description = product.Description,
+                    Price = product.Price,
+                    Quantity = 0
+                };
+                OrderItems.Add(orderItem);
+            }
+            orderItem.Quantity++;
+            UpdateDisplayedProduct(product);
+        }
+
+        public void DecreaseQuantity(Product product)
+        {
+            var orderItem = OrderItems.FirstOrDefault(oi => oi.ProductID == product.ProductID);
+            if (orderItem != null && orderItem.Quantity > 0)
+            {
+                orderItem.Quantity--;
+                if (orderItem.Quantity == 0)
+                    OrderItems.Remove(orderItem);
+                UpdateDisplayedProduct(product);
             }
         }
 
-        public ICommand OnSearchCommand { get; }
-        public ICommand OnSpeechToTextCommand { get; }
-        public ICommand IncreaseQuantityCommand { get; }
-        public ICommand DecreaseQuantityCommand { get; }
-        public ICommand ShowExtrasCommand { get; }
-
-        public CombinedViewModel()
+        private void UpdateDisplayedProduct(Product product)
         {
-            ProductCategories = DataService.Instance.ProductCategories;
-            _allProducts = new ObservableCollection<Product>(DataService.Instance.AllProducts); // Assuming this is your data source
-            DisplayedProducts = new ObservableCollection<Product>(_allProducts.Where(p => p.Favorite));
-            InitializeCommands();
-        }
-
-        private void InitializeCommands()
-        {
-            //OnSearchCommand = new Command<string>(PerformSearch);
-            // OnSpeakButtonClicked = new Command(StartSpeechToText);
+            var displayed = DisplayedProducts.FirstOrDefault(p => p.ProductID == product.ProductID);
+            if (displayed != null)
+            {
+                var orderItem = OrderItems.FirstOrDefault(oi => oi.ProductID == product.ProductID);
+                displayed.Quantity = orderItem?.Quantity ?? 0;
+            }
         }
 
         public void FilterProductsByCategory()
         {
-            //if (SelectedProductGroup != null)
+            DisplayedProducts.Clear();
+            var filtered = _dataService.AllProducts
+                .Where(p => p.ProductGroupID == ProgSettings.ActGrpid);
+            foreach (var product in filtered)
             {
-                // Assuming you have a method to get products by category
-                var filteredProducts = DataService.Instance.AllProducts.Where(p => p.ProductGroupID == ProgSettings.ActGrpid).ToList();
-                DisplayedProducts = new ObservableCollection<Product>(filteredProducts);
+                DisplayedProducts.Add(product);
             }
         }
 
-        public void PerformSearch(string query)
+        [RelayCommand]
+        public async Task ShowExtras()
         {
-            if (string.IsNullOrWhiteSpace(query))
+            SelectedExtras.Clear();
+            var extras = await _dataService.QueryAsync<Extra>(
+                "SELECT ExtraID AS ExtraID, Description, Price, ProductID FROM Extras WHERE ProductID = @ProductID",
+                new { ProductID = ProgSettings.Actprodrid });
+            foreach (var extra in extras)
             {
-                // If the query is empty, filter by favorites again
-                DisplayedProducts = new ObservableCollection<Product>(_allProducts.Where(p => p.Favorite));
-            }
-            else
-            {
-                var lowerQuery = query.ToLower(); // Normalize the query
-                DisplayedProducts = new ObservableCollection<Product>(
-                    _allProducts.Where(p => p.Description.ToLower().Contains(lowerQuery)));
+                SelectedExtras.Add(extra);
             }
         }
-
-        private void StartSpeechToText()
-        {
-            // Implement speech to text functionality
-        }
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-        public void IncreaseQuantity(Product product)
-        {
-            // Ensure this method is public and correctly implemented
-            MainThread.BeginInvokeOnMainThread(() =>
-            {
-                product.Quantity++;
-                Console.WriteLine("Quantity increased for: " + product.Description);
-                ProgSettings.Actprodrid = product.ProductID;
-                ProgSettings.ActGrpid = product.ProductGroupID;
-                ProgSettings.courseid = product.Row_Print;
-
-            });
-        }
-        public void DecreaseQuantity(Product product)
-        {
-            MainThread.BeginInvokeOnMainThread(() =>
-            {
-                if (product.Quantity > 0) product.Quantity--;
-                Console.WriteLine("Quantity decreased for: " + product.Description);
-                ProgSettings.Actprodrid = product.ProductID;
-                ProgSettings.ActGrpid = product.ProductGroupID;
-
-            });
-
-        }
-
-        public void ShowExtras()
-        {
-            var ExtraPage = new ExtrasOptionsPage();
-            Application.Current.MainPage.Navigation.PushModalAsync(ExtraPage);
-        }
-
     }
-    }
-
-
+}

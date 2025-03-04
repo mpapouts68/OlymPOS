@@ -3,6 +3,9 @@ using System.Windows.Input;
 using Microsoft.Maui.Controls;
 using System.Threading.Tasks;
 using OlymPOS;
+using OlymPOS.Models;
+using OlymPOS.Services;
+
 
 
 namespace OlymPOS;
@@ -45,6 +48,7 @@ private async void LoadOrders()
 
     }
 
+    [Obsolete]
     private void InitializeCommands()
     {
         // Initialize your commands with actions or methods here...
@@ -56,18 +60,22 @@ private async void LoadOrders()
 
         ExitCommand = new Command(() => {/* Implement exit action */});
     }
+
+    [Obsolete]
     private async Task OpenPaymentModal()
     {
         var paymentPage = new PaymentModalPage();
         await Application.Current.MainPage.Navigation.PushModalAsync(paymentPage);
     }
-    
+
+    [Obsolete]
     private async Task ShowDiscountModal()
     {
         var discountPage = new DiscountPage();
         await Application.Current.MainPage.Navigation.PushModalAsync(discountPage);
     }
 
+    [Obsolete]
     private async Task SendCommand1()
     {
         var MidPage = new MidCashReg();

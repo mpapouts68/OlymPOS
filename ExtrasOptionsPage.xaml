@@ -3,74 +3,154 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:buttons="clr-namespace:Syncfusion.Maui.Buttons;assembly=Syncfusion.Maui.Buttons"
              xmlns:sliders="clr-namespace:Syncfusion.Maui.Sliders;assembly=Syncfusion.Maui.Sliders"
-             xmlns:core="clr-namespace:Syncfusion.Maui.Core;assembly=Syncfusion.Maui.Core"
-             xmlns:local="clr-namespace:OlymPOS"
+             xmlns:viewmodels="clr-namespace:OlymPOS.ViewModels"
              x:Class="OlymPOS.ExtrasOptionsPage"
-             Title="Extras Options Page"
+             x:DataType="viewmodels:ExtrasViewModel"
+             Title="Extras Options"
              BackgroundColor="#1f1f1f">
-    <ContentPage.BindingContext>
-        <local:ExtraViewModel />
-    </ContentPage.BindingContext>
 
-    <StackLayout Orientation="Vertical">
-        <!-- Container for Segmented Control -->
-        <StackLayout x:Name="radioButtonsContainer" Orientation="Horizontal">
-            <!-- Segmented Control will be added programmatically here -->
+    <!-- ViewModel will be set in code-behind from the DI container -->
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <!-- Header with product info -->
+            <RowDefinition Height="Auto" />
+            <!-- Course selection -->
+            <RowDefinition Height="*" />
+            <!-- Extras list -->
+            <RowDefinition Height="Auto" />
+            <!-- Prefix buttons -->
+            <RowDefinition Height="Auto" />
+            <!-- Action buttons -->
+        </Grid.RowDefinitions>
+
+        <!-- Header with product info -->
+        <StackLayout Grid.Row="0" Padding="10" BackgroundColor="SteelBlue">
+            <Label Text="{Binding CurrentProduct.Description}" 
+                   FontSize="18" FontAttributes="Bold" TextColor="White"/>
+            <Label Text="{Binding CurrentProduct.Price, StringFormat='Price: {0:C}'}" 
+                   FontSize="16" TextColor="White"/>
         </StackLayout>
 
-        <!-- Separator -->
-        <BoxView HeightRequest="2" BackgroundColor="Gray" />
+        <!-- Course selection -->
+        <StackLayout Grid.Row="1" Orientation="Horizontal" 
+                    IsVisible="{Binding HasCourseOptions}"
+                    Padding="10" Spacing="10" BackgroundColor="#333333">
+            <Label Text="Course:" VerticalOptions="Center" TextColor="White" 
+                   FontAttributes="Bold" FontSize="16"/>
 
-        <!-- Checkboxes, Steppers, and Syncfusion Switches -->
-        <ScrollView>
-            <FlexLayout BindableLayout.ItemsSource="{Binding Extras}"
-                        Direction="Column"
-                        Wrap="Wrap"
-                        JustifyContent="Start"
-                        AlignItems="Start"
-                        AlignContent="Start">
-                <BindableLayout.ItemTemplate>
+            <CollectionView ItemsSource="{Binding Courses}" 
+                           SelectionMode="Single"
+                           SelectedItem="{Binding SelectedCourse}">
+                <CollectionView.ItemsLayout>
+                    <LinearItemsLayout Orientation="Horizontal" ItemSpacing="10"/>
+                </CollectionView.ItemsLayout>
+                <CollectionView.ItemTemplate>
                     <DataTemplate>
-                        <Grid VerticalOptions="StartAndExpand"
-                              ColumnDefinitions="*, *, *"
-                              RowDefinitions="Auto"
-                              ColumnSpacing="10">
-                            <!-- Checkbox -->
-                            <buttons:SfCheckBox Grid.Column="0"
-                                                Text="{Binding Description}" 
-                                                TextColor="SteelBlue" 
-                                                VerticalOptions="Center"/>
-                            <!-- Stepper and Quantity Label -->
-                            <StackLayout Grid.Column="1" Grid.Row="2" 
-                                         Orientation="Horizontal" 
-                                         HorizontalOptions="Start" 
-                                         VerticalOptions="Center">
-                                <sliders:SfSlider Grid.Column="1" Grid.Row="2">
-                                    <sliders:SfSlider.Tooltip>
-                                        <sliders:SliderTooltip />
-                                    </sliders:SfSlider.Tooltip>
-                                </sliders:SfSlider>
-                                <Label Text="{Binding Quantity}" 
-                                       FontSize="16" 
-                                       FontAttributes="Bold" 
-                                       HorizontalOptions="Start" 
-                                       VerticalOptions="Center" 
-                                       TextColor="White"/>
-                            </StackLayout>
+                        <buttons:SfRadioButton Text="{Binding Description}" 
+                                              IsChecked="{Binding IsSelected}"
+                                              TextColor="White"/>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </StackLayout>
 
+        <!-- Loading Indicator -->
+        <ActivityIndicator Grid.Row="2" 
+                          IsRunning="{Binding IsBusy}" 
+                          IsVisible="{Binding IsBusy}" 
+                          Color="SteelBlue" 
+                          HorizontalOptions="Center" 
+                          VerticalOptions="Center"/>
+
+        <!-- Extras list -->
+        <ScrollView Grid.Row="2" IsVisible="{Binding IsBusy, Converter={StaticResource InvertedBoolConverter}}">
+            <CollectionView ItemsSource="{Binding Extras}">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Padding="10" ColumnSpacing="10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+
+                            <buttons:SfCheckBox Grid.Column="0"
+                                              Text="{Binding Description}" 
+                                              IsChecked="{Binding IsSelected}"
+                                              TextColor="White" 
+                                              VerticalOptions="Center"/>
+
+                            <Stepper Grid.Column="1"
+                                    Value="{Binding quantity}"
+                                    Minimum="0"
+                                    Maximum="10"
+                                    Increment="1"
+                                    IsEnabled="{Binding IsSelected}"/>
+
+                            <Label Grid.Column="2"
+                                   Text="{Binding quantity}" 
+                                   FontSize="16" 
+                                   FontAttributes="Bold" 
+                                   TextColor="White"
+                                   VerticalOptions="Center"/>
                         </Grid>
                     </DataTemplate>
-                </BindableLayout.ItemTemplate>
-            </FlexLayout>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
         </ScrollView>
 
-        <!-- Prefix Buttons -->
-        <FlexLayout Direction="Column" Wrap="Wrap" JustifyContent="Center">
-            <buttons:SfButton Text="With" Margin="5" BackgroundColor="LightGray" TextColor="Black"/>
-            <buttons:SfButton Text="Without" Margin="5" BackgroundColor="LightGray" TextColor="Black"/>
-            <buttons:SfButton Text="A Little" Margin="5" BackgroundColor="LightGray" TextColor="Black"/>
-            <buttons:SfButton Text="A Lot" Margin="5" BackgroundColor="LightGray" TextColor="Black"/>
-            <buttons:SfButton Text="Only" Margin="5" BackgroundColor="LightGray" TextColor="Black"/>
+        <!-- Prefix buttons -->
+        <FlexLayout Grid.Row="3" Direction="Row" Wrap="Wrap" JustifyContent="Center" Padding="10">
+            <buttons:SfButton Text="With" 
+                             Margin="5" 
+                             Command="{Binding AddPrefixCommand}"
+                             CommandParameter="With"
+                             BackgroundColor="LightGray" 
+                             TextColor="Black"/>
+            <buttons:SfButton Text="Without" 
+                             Margin="5" 
+                             Command="{Binding AddPrefixCommand}"
+                             CommandParameter="Without"
+                             BackgroundColor="LightGray" 
+                             TextColor="Black"/>
+            <buttons:SfButton Text="A Little" 
+                             Margin="5" 
+                             Command="{Binding AddPrefixCommand}"
+                             CommandParameter="A Little"
+                             BackgroundColor="LightGray" 
+                             TextColor="Black"/>
+            <buttons:SfButton Text="A Lot" 
+                             Margin="5" 
+                             Command="{Binding AddPrefixCommand}"
+                             CommandParameter="A Lot"
+                             BackgroundColor="LightGray" 
+                             TextColor="Black"/>
+            <buttons:SfButton Text="Only" 
+                             Margin="5" 
+                             Command="{Binding AddPrefixCommand}"
+                             CommandParameter="Only"
+                             BackgroundColor="LightGray" 
+                             TextColor="Black"/>
         </FlexLayout>
-    </StackLayout>
+
+        <!-- Action buttons -->
+        <StackLayout Grid.Row="4" Orientation="Horizontal" HorizontalOptions="Center" Padding="10" Spacing="20">
+            <Button Text="Save" 
+                   Command="{Binding SaveCommand}" 
+                   BackgroundColor="Green" 
+                   TextColor="White"
+                   FontAttributes="Bold"
+                   WidthRequest="120"/>
+            <Button Text="Cancel" 
+                   Command="{Binding CancelCommand}" 
+                   BackgroundColor="Red" 
+                   TextColor="White" 
+                   FontAttributes="Bold"
+                   WidthRequest="120"/>
+        </StackLayout>
+    </Grid>
 </ContentPage>
+    
+    

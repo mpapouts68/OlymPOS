@@ -1,7 +1,9 @@
-﻿using OlymPOS;
+﻿using System;
 using System.Collections.ObjectModel;
+using System.Threading.Tasks;
+using OlymPOS.Services;
 
-namespace OlymPOS
+namespace OlymPOS.Models
 {
     public class Order
     {
@@ -35,16 +37,18 @@ namespace OlymPOS
         public decimal? CashAmount { get; set; }
         public decimal? CardAmount { get; set; }
         public decimal? VoucherAmount { get; set; }
-        public string DescriptionWithPostNumber => $"{Description} {PostNumber}";
+
         public ObservableCollection<OrderItem> OrderItems { get; set; } = new ObservableCollection<OrderItem>();
-    
-    public async Task LoadOrderItems(OrderDataService service)
-    {
-        var items = await service.GetOrderItemsAsync(OrderID);
-        foreach (var item in items)
+
+        // ✅ Add LoadOrderItems() to load items for this order
+        public async Task LoadOrderItems(OrderDataService service)
         {
-            OrderItems.Add(item);
+            var items = await service.GetOrderItemsAsync(OrderID);
+            OrderItems.Clear();
+            foreach (var item in items)
+            {
+                OrderItems.Add(item);
+            }
         }
     }
-}
 }

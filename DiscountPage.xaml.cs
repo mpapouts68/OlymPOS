@@ -1,4 +1,5 @@
 using OlymPOS;
+using OlymPOS.Services;
 
 namespace OlymPOS;
 

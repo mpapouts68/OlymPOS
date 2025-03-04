@@ -1,28 +1,58 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:OlymPOS.ViewModels"
              x:Class="OlymPOS.PaymentModalPage"
+             x:DataType="viewmodels:PaymentViewModel"
              Title="Payment Options">
 
-    <VerticalStackLayout Spacing="140" Padding="40">
+    <!-- ViewModel will be set in code-behind from the DI container -->
 
-        <!-- Payment Option ImageButtons -->
-        <StackLayout Orientation="Horizontal" HorizontalOptions="Center" Spacing="20">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <!-- Header -->
+            <RowDefinition Height="Auto" />
+            <!-- Payment Options -->
+            <RowDefinition Height="*" />
+            <!-- Additional Options -->
+        </Grid.RowDefinitions>
+
+        <!-- Header with Total -->
+        <StackLayout Grid.Row="0" Padding="20,10" BackgroundColor="SteelBlue">
+            <Label Text="Total Amount" FontSize="16" TextColor="White"/>
+            <Label Text="{Binding OrderTotal, StringFormat='{0:C}'}" FontSize="24" FontAttributes="Bold" TextColor="White"/>
+
+            <StackLayout Orientation="Horizontal" Margin="0,10,0,0">
+                <CheckBox IsChecked="{Binding ShouldPrintReceipt}" VerticalOptions="Center"/>
+                <Label Text="Print Receipt" VerticalOptions="Center" TextColor="White"/>
+            </StackLayout>
+        </StackLayout>
+
+        <!-- Payment Options -->
+        <StackLayout Grid.Row="1" Orientation="Horizontal" HorizontalOptions="Center" Spacing="20" Padding="20">
             <VerticalStackLayout>
-                <ImageButton Source="cash64.png" Command="{Binding CashCommand}" WidthRequest="80" HeightRequest="60"/>
+                <ImageButton Source="cash64.png" 
+                            Command="{Binding CashPaymentCommand}" 
+                            WidthRequest="80" HeightRequest="60"/>
                 <Label Text="Cash" HorizontalTextAlignment="Center" FontSize="20" FontAttributes="Bold"/>
             </VerticalStackLayout>
             <VerticalStackLayout>
-                <ImageButton Source="card.png" Command="{Binding CardCommand}" WidthRequest="100" HeightRequest="60"/>
+                <ImageButton Source="card.png" 
+                            Command="{Binding CardPaymentCommand}" 
+                            WidthRequest="100" HeightRequest="60"/>
                 <Label Text="Card" HorizontalTextAlignment="Center" FontSize="20" FontAttributes="Bold"/>
             </VerticalStackLayout>
             <VerticalStackLayout>
-                <ImageButton Source="voucher64.png" Command="{Binding VoucherCommand}" WidthRequest="100" HeightRequest="60"/>
+                <ImageButton Source="voucher64.png" 
+                            Command="{Binding VoucherPaymentCommand}" 
+                            WidthRequest="100" HeightRequest="60"/>
                 <Label Text="Voucher" HorizontalTextAlignment="Center" FontSize="20" FontAttributes="Bold"/>
             </VerticalStackLayout>
         </StackLayout>
 
-        <!-- Additional Options arranged in 2 columns and 3 rows -->
-        <Grid HorizontalOptions="Center" VerticalOptions="Center" RowSpacing="10" ColumnSpacing="50">
+        <!-- Additional Options -->
+        <Grid Grid.Row="2" HorizontalOptions="Center" VerticalOptions="Center" 
+              RowSpacing="10" ColumnSpacing="50" Padding="20">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
@@ -35,32 +65,83 @@
 
             <!-- Column 0 -->
             <VerticalStackLayout Grid.Row="0" Grid.Column="0">
-                <ImageButton Source="tprinter.png" WidthRequest="100" HeightRequest="100" Command="{Binding PrintOption1Command}"/>
-                <Label Text="Print Only" HorizontalTextAlignment="Center" FontSize="20" FontAttributes="Bold"/>
+                <ImageButton Source="tprinter.png" 
+                            WidthRequest="70" HeightRequest="70" 
+                            Command="{Binding PrintOnlyCommand}"/>
+                <Label Text="Print Only" HorizontalTextAlignment="Center" FontSize="16" FontAttributes="Bold"/>
             </VerticalStackLayout>
             <VerticalStackLayout Grid.Row="1" Grid.Column="0">
-                <ImageButton Source="trinterc.png" WidthRequest="100" HeightRequest="100" Command="{Binding PrintOption2Command}"/>
-                <Label Text="Close Only" HorizontalTextAlignment="Center" FontSize="20" FontAttributes="Bold"/>
+                <ImageButton Source="trinterc.png" 
+                            WidthRequest="70" HeightRequest="70" 
+                            Command="{Binding CloseOnlyCommand}"/>
+                <Label Text="Close Only" HorizontalTextAlignment="Center" FontSize="16" FontAttributes="Bold"/>
             </VerticalStackLayout>
             <VerticalStackLayout Grid.Row="2" Grid.Column="0">
-                <ImageButton Source="cashreg.png" WidthRequest="100" HeightRequest="100" Command="{Binding PrintOption3Command}"/>
-                <Label Text="Re-Send" HorizontalTextAlignment="Center" FontSize="20" FontAttributes="Bold"/>
+                <ImageButton Source="cashreg.png" 
+                            WidthRequest="70" HeightRequest="70"/>
+                <Label Text="Re-Send" HorizontalTextAlignment="Center" FontSize="16" FontAttributes="Bold"/>
             </VerticalStackLayout>
 
             <!-- Column 1 -->
             <VerticalStackLayout Grid.Row="0" Grid.Column="1">
-                <ImageButton Source="tprinter.png" WidthRequest="100" HeightRequest="100" Command="{Binding PrintOption4Command}"/>
-                <Label Text="Print And Close" HorizontalTextAlignment="Center" FontSize="20" FontAttributes="Bold"/>
+                <ImageButton Source="tprinter.png" 
+                            WidthRequest="70" HeightRequest="70"/>
+                <Label Text="Print And Close" HorizontalTextAlignment="Center" FontSize="16" FontAttributes="Bold"/>
             </VerticalStackLayout>
             <VerticalStackLayout Grid.Row="1" Grid.Column="1">
-                <ImageButton Source="admin.png" WidthRequest="100" HeightRequest="100" Command="{Binding PrintOption5Command}"/>
-                <Label Text="Admin" HorizontalTextAlignment="Center" FontSize="20" FontAttributes="Bold"/>
+                <ImageButton Source="admin.png" 
+                            WidthRequest="70" HeightRequest="70"/>
+                <Label Text="Admin" HorizontalTextAlignment="Center" FontSize="16" FontAttributes="Bold"/>
             </VerticalStackLayout>
             <VerticalStackLayout Grid.Row="2" Grid.Column="1">
-                <ImageButton Source="exit.png" WidthRequest="100" HeightRequest="100" Command="{Binding PrintOption6Command}"/>
-                <Label Text="Exit" HorizontalTextAlignment="Center" FontSize="20" FontAttributes="Bold"/>
+                <ImageButton Source="exit.png" 
+                            WidthRequest="70" HeightRequest="70" 
+                            Command="{Binding CancelCommand}"/>
+                <Label Text="Exit" HorizontalTextAlignment="Center" FontSize="16" FontAttributes="Bold"/>
             </VerticalStackLayout>
         </Grid>
-    </VerticalStackLayout>
 
+        <!-- Payment Details Entry (appears when needed) -->
+        <Grid Grid.RowSpan="3"
+              BackgroundColor="#80000000"
+              IsVisible="{Binding IsShowingPaymentDetails}">
+            <Border BackgroundColor="White"
+                   WidthRequest="300"
+                   HeightRequest="300"
+                   StrokeThickness="0"
+                   HorizontalOptions="Center"
+                   VerticalOptions="Center">
+                <StackLayout Padding="20">
+                    <Label Text="Payment Details" FontSize="20" FontAttributes="Bold" HorizontalOptions="Center"/>
+
+                    <Label Text="Cash Amount" Margin="0,10,0,0"/>
+                    <Entry Text="{Binding CashAmount}" Keyboard="Numeric"/>
+
+                    <Label Text="Card Amount" Margin="0,10,0,0"/>
+                    <Entry Text="{Binding CardAmount}" Keyboard="Numeric"/>
+
+                    <Label Text="Voucher Amount" Margin="0,10,0,0"/>
+                    <Entry Text="{Binding VoucherAmount}" Keyboard="Numeric"/>
+
+                    <Label Text="{Binding ChangeAmount, StringFormat='Change: {0:C}'}" 
+                           Margin="0,10,0,0"
+                           FontAttributes="Bold"/>
+
+                    <StackLayout Orientation="Horizontal" Margin="0,20,0,0" HorizontalOptions="Center">
+                        <Button Text="Complete" Command="{Binding CompletePaymentCommand}" BackgroundColor="Green"/>
+                        <Button Text="Cancel" Command="{Binding CancelCommand}" BackgroundColor="Red"/>
+                    </StackLayout>
+                </StackLayout>
+            </Border>
+        </Grid>
+
+        <!-- Loading Indicator -->
+        <ActivityIndicator Grid.RowSpan="3" 
+                          IsRunning="{Binding IsBusy}" 
+                          IsVisible="{Binding IsBusy}" 
+                          Color="SteelBlue" 
+                          HorizontalOptions="Center" 
+                          VerticalOptions="Center"/>
+    </Grid>
 </ContentPage>
+    

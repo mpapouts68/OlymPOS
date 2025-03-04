@@ -1,20 +1,23 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="OlymPOS.MainPage">
+             xmlns:viewmodels="clr-namespace:OlymPOS.ViewModels"
+             x:Class="OlymPOS.MainPage"
+             x:DataType="viewmodels:LoginViewModel">
+
+    <!-- ViewModel will be set in code-behind from the DI container -->
+
     <Grid Padding="30" RowSpacing="2" ColumnSpacing="4"
           RowDefinitions="2*,*,*,*,*,*"
           ColumnDefinitions="*,*,*"
-        BackgroundColor="{StaticResource White}">
+          BackgroundColor="{StaticResource White}">
 
         <Image Source="logsmall.png" Grid.Row="0" HorizontalOptions="Center" VerticalOptions="CenterAndExpand"
-               Grid.ColumnSpan="10" />
+               Grid.ColumnSpan="3" />
 
-
-        <Label x:Name="CurrentCalculation"
-               FontSize="18"
+        <Label FontSize="18"
                LineBreakMode="NoWrap"
-               Grid.ColumnSpan="30"
+               Grid.ColumnSpan="3"
                Text="Please Enter PIN"
                TextColor="{StaticResource Black}"
                HorizontalTextAlignment="Center"
@@ -23,90 +26,121 @@
 
         <Entry x:Name="resultText"
                FontFamily="Courier New"
-               FontSize="40" FontAttributes="Bold" 
+               FontSize="40" 
+               FontAttributes="Bold" 
                HorizontalTextAlignment="Center"
                VerticalTextAlignment="End"
-               TextColor="{Color}"
-               Text="****"
+               TextColor="Black"
+               Text="{Binding DisplayPin}"
                IsPassword="True"
-               Grid.ColumnSpan="10" 
+               IsReadOnly="True"
+               Grid.ColumnSpan="3" 
                Grid.Row="1"/>
 
-        <ActivityIndicator x:Name="activityIndicator"
-              IsRunning="False"
-              IsVisible="False"
-              Color="SteelBlue"
-              VerticalOptions="Center"
-              HorizontalOptions="Center"
-              HeightRequest="50"
-              WidthRequest="50"                           
-              Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3"
-            />
+        <ActivityIndicator IsRunning="{Binding IsBusy}"
+                          IsVisible="{Binding IsBusy}"
+                          Color="SteelBlue"
+                          VerticalOptions="Center"
+                          HorizontalOptions="Center"
+                          HeightRequest="50"
+                          WidthRequest="50"                           
+                          Grid.Row="1" 
+                          Grid.Column="0" 
+                          Grid.ColumnSpan="3" />
 
         <Button Text="7" Grid.Row="2" Grid.Column="0" 
                 BackgroundColor="SteelBlue"
-                TextColor="Black" FontSize="40"
-               FontAttributes="Bold"
-               Clicked="OnSelectNumber" />
-        <Button Text="8" Grid.Row="2" Grid.Column="1"
-               BackgroundColor="SteelBlue"
-               TextColor="Black" FontSize="40"
-               FontAttributes="Bold"
-                       
-               Clicked="OnSelectNumber" />
-        <Button Text="9" Grid.Row="2" Grid.Column="2"
-               BackgroundColor="SteelBlue"
-               TextColor="Black" FontSize="40"
+                TextColor="Black" 
+                FontSize="40"
                 FontAttributes="Bold"
-               Clicked="OnSelectNumber" />
+                Command="{Binding NumberCommand}"
+                CommandParameter="7" />
+
+        <Button Text="8" Grid.Row="2" Grid.Column="1"
+                BackgroundColor="SteelBlue"
+                TextColor="Black" 
+                FontSize="40"
+                FontAttributes="Bold"
+                Command="{Binding NumberCommand}"
+                CommandParameter="8" />
+
+        <Button Text="9" Grid.Row="2" Grid.Column="2"
+                BackgroundColor="SteelBlue"
+                TextColor="Black" 
+                FontSize="40"
+                FontAttributes="Bold"
+                Command="{Binding NumberCommand}"
+                CommandParameter="9" />
 
         <Button Text="4" Grid.Row="3" Grid.Column="0"
-                   BackgroundColor="SteelBlue"
-   TextColor="Black" FontSize="40"
+                BackgroundColor="SteelBlue"
+                TextColor="Black" 
+                FontSize="40"
                 FontAttributes="Bold"
-              Clicked="OnSelectNumber" />
+                Command="{Binding NumberCommand}"
+                CommandParameter="4" />
+
         <Button Text="5" Grid.Row="3" Grid.Column="1"
-                   BackgroundColor="SteelBlue"
-   TextColor="Black" FontSize="40"
+                BackgroundColor="SteelBlue"
+                TextColor="Black" 
+                FontSize="40"
                 FontAttributes="Bold"
-              Clicked="OnSelectNumber" />
+                Command="{Binding NumberCommand}"
+                CommandParameter="5" />
+
         <Button Text="6" Grid.Row="3" Grid.Column="2"
-                   BackgroundColor="SteelBlue"
-   TextColor="Black" FontSize="40"
+                BackgroundColor="SteelBlue"
+                TextColor="Black" 
+                FontSize="40"
                 FontAttributes="Bold"
-              Clicked="OnSelectNumber" />
+                Command="{Binding NumberCommand}"
+                CommandParameter="6" />
 
         <Button Text="1" Grid.Row="4" Grid.Column="0"
-                   BackgroundColor="SteelBlue"
-   TextColor="Black" FontSize="40"
+                BackgroundColor="SteelBlue"
+                TextColor="Black" 
+                FontSize="40"
                 FontAttributes="Bold"
-              Clicked="OnSelectNumber" />
+                Command="{Binding NumberCommand}"
+                CommandParameter="1" />
+
         <Button Text="2" Grid.Row="4" Grid.Column="1"
-                   BackgroundColor="SteelBlue"
-   TextColor="Black" FontSize="40"
+                BackgroundColor="SteelBlue"
+                TextColor="Black" 
+                FontSize="40"
                 FontAttributes="Bold"
-              Clicked="OnSelectNumber" />
+                Command="{Binding NumberCommand}"
+                CommandParameter="2" />
+
         <Button Text="3" Grid.Row="4" Grid.Column="2"
-                   BackgroundColor="SteelBlue"
-   TextColor="Black" FontSize="40"
+                BackgroundColor="SteelBlue"
+                TextColor="Black" 
+                FontSize="40"
                 FontAttributes="Bold"
-              Clicked="OnSelectNumber" />
+                Command="{Binding NumberCommand}"
+                CommandParameter="3" />
+
         <Button Text="0" Grid.Row="5" Grid.Column="1" 
-                   BackgroundColor="SteelBlue"
-   TextColor="Black" FontSize="40"
+                BackgroundColor="SteelBlue"
+                TextColor="Black" 
+                FontSize="40"
                 FontAttributes="Bold"
-              Clicked="OnSelectNumber" />
+                Command="{Binding NumberCommand}"
+                CommandParameter="0" />
+
         <Button Text="OK" Grid.Row="5" Grid.Column="0" 
-                   BackgroundColor="SteelBlue"
-   TextColor="Black" FontSize="40"
+                BackgroundColor="SteelBlue"
+                TextColor="Black" 
+                FontSize="40"
                 FontAttributes="Bold"
-               Clicked="LogonAsync" />
+                Command="{Binding LoginCommand}" />
+
         <Button Text="C" Grid.Row="5" Grid.Column="2" 
-                   BackgroundColor="SteelBlue"
-   TextColor="Red" FontSize="40"
+                BackgroundColor="SteelBlue"
+                TextColor="Red" 
+                FontSize="40"
                 FontAttributes="Bold"
-               Clicked="OnClear" />
-
-
+                Command="{Binding ClearCommand}" />
     </Grid>
 </ContentPage>
+    

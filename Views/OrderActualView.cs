@@ -1,24 +1,29 @@
 ﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using OlymPOS;
+using OlymPOS.Models;
+using OlymPOS.Repositories.Interfaces;
 
-namespace OlymPOS;
-
-public class OrderActualView : INotifyPropertyChanged
+namespace OlymPOS.ViewModels // Adjusted namespace for consistency
 {
-    public ObservableCollection<Product> AllProducts => DataService.Instance.AllProducts;
-
-    public OrderActualView()
+    public class OrderActualView : INotifyPropertyChanged
     {
-        // Assuming DataService.Instance.LoadAllDataAsync has been called post-login, no need to load again
-    }
+        private readonly IDataService _dataService;
 
-    public event PropertyChangedEventHandler PropertyChanged;
+        public ObservableCollection<Product> AllProducts => _dataService.AllProducts; // Use injected service
 
-    protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-    {
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        public OrderActualView(IDataService dataService)
+        {
+            _dataService = dataService;
+            // Assuming LoadAllDataAsync was called post-login (e.g., in MainPage), no additional loading needed
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
     }
 }
 
