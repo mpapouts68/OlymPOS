@@ -5,7 +5,15 @@ using SQLite;
 using OlymPOS.Services.Interfaces;
 using System.Text.Json;
 
-namespace OlymPOS.Services.Caching
+<<<<<<< TODO: Unmerged change from project 'OlymPOS (net9.0-maccatalyst)', Before:
+=======
+using OlymPOS;
+using OlymPOS.Services;
+using OlymPOS.Services.Caching;
+using OlymPOS.Caching;
+>>>>>>> After
+
+namespace OlymPOS.Caching
 {
     public class SqliteCacheManager : ICacheManager
     {

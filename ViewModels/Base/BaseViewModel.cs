@@ -5,7 +5,7 @@ using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
-namespace OlymPOS.ViewModels
+namespace OlymPOS.ViewModels.Base
 {
     public abstract class BaseViewModel : INotifyPropertyChanged
     {
@@ -169,7 +169,7 @@ namespace OlymPOS.ViewModels
         {
             return !_isExecuting &&
                 (parameter == null || parameter is T ||
-                (parameter is not T && parameter.GetType().IsValueType && parameter.ToString() == default(T).ToString()) ||
+                parameter is not T && parameter.GetType().IsValueType && parameter.ToString() == default(T).ToString() ||
                 parameter.GetType().IsAssignableFrom(typeof(T))) &&
                 _canExecute((T)parameter);
         }

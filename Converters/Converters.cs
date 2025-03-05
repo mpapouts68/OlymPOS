@@ -2,7 +2,7 @@
 using System.Globalization;
 using Microsoft.Maui.Controls;
 
-namespace OlymPOS // Adjust if your namespace is different
+namespace OlymPOS.Converters // Adjust if your namespace is different
 {
     public class LevelToIndentConverter : IValueConverter
     {

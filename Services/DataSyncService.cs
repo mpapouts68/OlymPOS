@@ -5,8 +5,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using OlymPOS.Services.Caching;
 using System.ComponentModel.DataAnnotations.Schema;
+using OlymPOS.Caching;
 
 namespace OlymPOS.Services
 {

@@ -56,6 +56,15 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <AndroidResource Remove="Views\NewFolder\**" />
+	  <Compile Remove="Views\NewFolder\**" />
+	  <EmbeddedResource Remove="Views\NewFolder\**" />
+	  <MauiCss Remove="Views\NewFolder\**" />
+	  <MauiXaml Remove="Views\NewFolder\**" />
+	  <None Remove="Views\NewFolder\**" />
+	</ItemGroup>
+
+	<ItemGroup>
 	  <MauiImage Remove="Resources\Images\logqua.svg" />
 	</ItemGroup>
 
@@ -146,40 +155,40 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <MauiXaml Update="CombinedPage.xaml">
+	  <MauiXaml Update="Views\CombinedPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="DiscountPage.xaml">
+	  <MauiXaml Update="Views\DiscountPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="ExtrasOptionsPage.xaml">
+	  <MauiXaml Update="Views\ExtrasOptionsPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="ItemsPage.xaml">
+	  <MauiXaml Update="Views\ItemsPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="MidCashReg.xaml">
+	  <MauiXaml Update="Views\MidCashReg.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="NumOrderPage.xaml">
+	  <MauiXaml Update="Views\NumOrderPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="Orders.xaml">
+	  <MauiXaml Update="Views\Orders.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="OrderStatusPage.xaml">
+	  <MauiXaml Update="Views\OrderStatusPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="OrderTab.xaml">
+	  <MauiXaml Update="Views\OrderTab.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="PaymentModalPage.xaml">
+	  <MauiXaml Update="Views\PaymentModalPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="StatisticsPage.xaml">
+	  <MauiXaml Update="Views\StatisticsPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="TablePage.xaml">
+	  <MauiXaml Update="Views\TablePage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="TableTempl.xaml">
@@ -189,14 +198,17 @@
 
 	<ItemGroup>
 	<Folder Include="Modules\" />
-	<Folder Include="Services\Repositories\" />
-	<Folder Include="Views\NewFolder\" />
 	</ItemGroup>
 	<ItemGroup>
 	  <Resource Include="addorder.png">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </Resource>
 	
+	</ItemGroup>
+	<ItemGroup>
+	  <Compile Update="Platforms\iOS\SpeechToTextImplementation.cs">
+	    <ExcludeFromCurrentConfiguration>false</ExcludeFromCurrentConfiguration>
+	  </Compile>
 	</ItemGroup>
 
 	<ProjectExtensions><VisualStudio><UserProperties XamarinHotReloadDebuggerTimeoutExceptionOlymPOSHideInfoBar="True" /></VisualStudio></ProjectExtensions>

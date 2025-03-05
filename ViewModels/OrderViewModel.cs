@@ -1,4 +1,5 @@
 ﻿using OlymPOS.Services.Interfaces;
+using OlymPOS.ViewModels.Base;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;

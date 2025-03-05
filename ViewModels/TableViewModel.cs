@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using OlymPOS.Services.Interfaces;
+using OlymPOS.ViewModels.Base;
 
 namespace OlymPOS.ViewModels
 {

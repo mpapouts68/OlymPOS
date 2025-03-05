@@ -1,7 +1,7 @@
 ﻿using System;
 using MySqlConnector;
 
-namespace OlymPOS.Services
+namespace OlymPOS.Extensions
 {
     public static class MySqlDataReaderExtensions
     {

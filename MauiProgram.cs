@@ -5,8 +5,9 @@ using Syncfusion.Maui.Core.Hosting;
 using OlymPOS.Services;
 using OlymPOS.Services.Interfaces;
 using OlymPOS.ViewModels;
-using OlymPOS.Services.Repositories;
+using OlymPOS.Repositories;
 using OlymPOS.Services.Caching;
+using OlymPOS.Converters;
 
 namespace OlymPOS
 {
@@ -30,6 +31,9 @@ namespace OlymPOS
             // Register view models
             RegisterViewModels(builder.Services);
 
+            // Register converters
+            RegisterConverters(builder.Services);
+
             // Register Maui Community Toolkit
             builder.UseMauiCommunityToolkit();
             builder.UseMauiCommunityToolkitCore();
@@ -43,47 +47,91 @@ namespace OlymPOS
 
         private static void RegisterServices(IServiceCollection services)
         {
-            // Register singleton service for application-wide configuration
+            // Register global configuration services
             services.AddSingleton<IAppSettings, AppSettings>();
-
-            // Database connection factory
-            services.AddSingleton<IDatabaseConnectionFactory, DatabaseConnectionFactory>();
-
-            // Cache manager
             services.AddSingleton<ICacheManager, SqliteCacheManager>();
 
-            // Data sync service
+            // Register database services
+            services.AddSingleton<IDatabaseConnectionFactory, DatabaseConnectionFactory>();
             services.AddSingleton<ISyncService, DataSyncService>();
 
-            // Data service (for backward compatibility)
-            services.AddSingleton<IDataService>(provider => DataService.Instance);
-
-            // Repositories
-            services.AddSingleton<IProductRepository, ProductRepository>();
-            services.AddSingleton<IOrderRepository, OrderRepository>();
-            services.AddSingleton<IProductGroupRepository, ProductGroupRepository>();
-            services.AddSingleton<ITableRepository, TableRepository>();
-
-            // Services
+            // Register core application services
             services.AddSingleton<IAuthenticationService, AuthenticationService>();
+            services.AddSingleton<IDataService, DataService>();
             services.AddSingleton<IOrderService, OrderService>();
             services.AddSingleton<IPrintService, PrintService>();
 
-            // OrderDataService (for backward compatibility)
+            // Register repositories
+            services.AddSingleton<IOrderRepository, OrderRepository>();
+            services.AddSingleton<IProductRepository, ProductRepository>();
+            services.AddSingleton<IProductGroupRepository, ProductGroupRepository>();
+            services.AddSingleton<ITableRepository, TableRepository>();
+
+            // Register platform-specific services
+#if ANDROID
+            services.AddSingleton<ISpeechToTextService, Platforms.Android.SpeechToTextImplementation>();
+#elif IOS
+            services.AddSingleton<ISpeechToTextService, Platforms.iOS.SpeechToTextImplementation>();
+#else
+            services.AddSingleton<ISpeechToTextService, DefaultSpeechToTextService>();
+#endif
+
+            // Register backward compatibility services
             services.AddSingleton<OrderDataService>();
         }
 
         private static void RegisterViewModels(IServiceCollection services)
         {
-            // Register view models
+            // Register view models with transient lifetime
             services.AddTransient<LoginViewModel>();
-            services.AddTransient<OrderViewModel>();
             services.AddTransient<TableViewModel>();
+            services.AddTransient<OrderViewModel>();
             services.AddTransient<ProductViewModel>();
-            services.AddTransient<ItemsViewModel>();
-            services.AddTransient<PaymentViewModel>();
             services.AddTransient<ExtrasViewModel>();
+            services.AddTransient<PaymentViewModel>();
             services.AddTransient<StatisticsViewModel>();
+            services.AddTransient<SettingsViewModel>();
+            services.AddTransient<CombinedViewModel>();
+        }
+
+        private static void RegisterConverters(IServiceCollection services)
+        {
+            // Register value converters
+            services.AddSingleton<QuantityToImageConverter>();
+            services.AddSingleton<ReceiptStatusToImageConverter>();
+            services.AddSingleton<BoolToVisibilityConverter>();
+            services.AddSingleton<InvertedBoolConverter>();
+            services.AddSingleton<LevelToIndentConverter>();
+        }
+    }
+
+    // Default implementation for platforms that don't have specific speech-to-text
+    public class DefaultSpeechToTextService : ISpeechToTextService
+    {
+        private readonly WeakEventManager _eventManager = new WeakEventManager();
+
+        public event EventHandler<string> SpeechRecognized
+        {
+            add => _eventManager.AddEventHandler(value);
+            remove => _eventManager.RemoveEventHandler(value);
+        }
+
+        public bool IsSupported => false;
+
+        public Task<string> RecognizeSpeechAsync()
+        {
+            OnSpeechRecognized("Speech recognition is not supported on this platform");
+            return Task.FromResult<string>(null);
+        }
+
+        public void StartSpeechToText()
+        {
+            OnSpeechRecognized("Speech recognition is not supported on this platform");
+        }
+
+        public void OnSpeechRecognized(string result)
+        {
+            _eventManager.HandleEvent(this, result, nameof(SpeechRecognized));
         }
     }
 }

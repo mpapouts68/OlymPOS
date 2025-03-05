@@ -1,13 +1,14 @@
 ﻿using OlymPOS.Services.Interfaces;
-using OlymPOS.Services.Caching;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using MySqlConnector;
 using SQLite;
+using OlymPOS.Services;
+using OlymPOS.Caching;
 
-namespace OlymPOS.Services.Repositories
+namespace OlymPOS.Repositories
 {
     public class OrderRepository : IOrderRepository
     {
@@ -892,7 +893,7 @@ namespace OlymPOS.Services.Repositories
                 if (cachedOrder.OrderTotal.HasValue)
                 {
                     decimal orderTotal = cachedOrder.OrderTotal.Value;
-                    double discountAmount = (double)(orderTotal * (decimal)discountPercentage / 100);
+                    double discountAmount = (double)(orderTotal * discountPercentage / 100);
                     double totalAfterDiscount = (double)orderTotal - discountAmount;
 
                     cachedOrder.OrderDiscountAmount = discountAmount;

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using MySqlConnector;
 using OlymPOS.Services.Interfaces;
-using OlymPOS.Services.Caching;
+using OlymPOS.Caching;
 
 namespace OlymPOS.Services
 {

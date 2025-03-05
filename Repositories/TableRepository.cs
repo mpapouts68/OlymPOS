@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using MySqlConnector;
-using OlymPOS.Services.Caching;
+using OlymPOS.Caching;
 using OlymPOS.Services.Interfaces;
 
-namespace OlymPOS.Services.Repositories
+namespace OlymPOS.Repositories
 {
     public class TableRepository : ITableRepository
     {
